@@ -3,116 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>24 House | Plataforma Inteligente 24h</title>
+<title>24 House | Plataforma Inteligente</title>
 
 <style>
 body{
   margin:0;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background:#0f0f11;
-  color:#eaeaea;
-  height:100vh;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#0d0d0f;
+  color:white;
   display:flex;
-  justify-content:center;
-  align-items:center;
+  flex-direction:column;
+  height:100vh;
 }
-
-/* ===== TELA INICIAL ===== */
 
 #entry{
   display:flex;
   flex-direction:column;
+  justify-content:center;
   align-items:center;
+  height:100%;
   gap:25px;
-  text-align:center;
-  animation:fadeIn 0.6s ease;
-}
-
-.logo-container{
-  border:1px solid #2b2b2e;
-  padding:50px 60px;
-  border-radius:20px;
-  background:#161618;
-  box-shadow:0 0 40px rgba(194,59,255,0.15);
 }
 
 .logo{
-  font-size:58px;
+  font-size:60px;
   font-weight:bold;
+  border:2px solid #2a2a2e;
+  border-radius:20px;
+  padding:30px 50px;
+  background:#141417;
+  box-shadow:0 0 40px rgba(194,59,255,0.3);
 }
 
-.logo .n24{
+.logo span:first-child{
   color:#c23bff;
   text-shadow:0 0 20px #c23bff;
 }
 
-.logo .house{
-  background:linear-gradient(90deg,#c23bff,#8e44ff,#c23bff);
+.logo span:last-child{
+  background:linear-gradient(90deg,#c23bff,#ffffff,#c23bff);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  animation:glow 4s infinite alternate;
-}
-
-.subtitle{
-  font-size:14px;
-  color:#aaa;
-  max-width:300px;
 }
 
 button{
-  padding:12px 30px;
-  border-radius:30px;
+  padding:12px 25px;
+  border-radius:10px;
   border:none;
   cursor:pointer;
-  font-weight:600;
+  font-weight:bold;
   background:#c23bff;
   color:black;
-  transition:0.3s;
 }
-
-button:hover{
-  opacity:0.85;
-}
-
-/* ===== CHAT ===== */
 
 #chat{
   display:none;
   flex-direction:column;
-  width:100%;
-  height:100vh;
-  max-width:700px;
-  background:#111114;
-  border-left:1px solid #222;
-  border-right:1px solid #222;
+  height:100%;
 }
 
-#chatHeader{
+.header{
   padding:15px;
-  border-bottom:1px solid #222;
-  font-size:14px;
-  color:#aaa;
+  background:#141417;
+  border-bottom:1px solid #2a2a2e;
+  text-align:center;
+  font-weight:bold;
 }
 
 #messages{
   flex:1;
   padding:20px;
   overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
 }
 
 .msg{
-  padding:12px 16px;
-  border-radius:15px;
+  margin-bottom:15px;
+  padding:12px 18px;
+  border-radius:12px;
   max-width:75%;
-  line-height:1.4;
-  font-size:14px;
 }
 
 .bot{
-  background:#1c1c1f;
+  background:#1e1e22;
 }
 
 .user{
@@ -125,107 +97,100 @@ button:hover{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
-}
-
-.options button{
-  background:#2a2a2d;
-  color:#eaeaea;
-  border:1px solid #333;
-  font-size:13px;
-}
-
-.options button:hover{
-  background:#c23bff;
-  color:black;
-}
-
-input{
-  padding:12px;
-  border-radius:20px;
-  border:1px solid #333;
-  background:#1c1c1f;
-  color:white;
-  width:100%;
   margin-top:10px;
 }
 
-#error{
-  color:#ff4d4d;
-  font-size:13px;
-  display:none;
+.options button{
+  background:#2a2a2e;
+  color:white;
 }
 
-@keyframes glow{
-  from{opacity:0.8;}
-  to{opacity:1;}
+.image-card{
+  background:#1e1e22;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:15px;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
+.image-card img{
+  width:100%;
+  border-radius:8px;
+}
+
+.download-btn{
+  margin-top:8px;
+  background:#c23bff;
+  color:black;
+  padding:8px;
+  border-radius:6px;
+  text-decoration:none;
+  display:inline-block;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== ENTRADA ===== -->
-
 <div id="entry">
-  <div class="logo-container">
-    <div class="logo">
-      <span class="n24">24</span> <span class="house">House</span>
-    </div>
+  <div class="logo">
+    <span>24</span> <span>House</span>
   </div>
-
-  <div class="subtitle">
-    Plataforma inteligente de agendamento e atendimento 24h
-  </div>
-
-  <button onclick="showNameInput()">Continuar</button>
-
-  <div id="nameArea" style="display:none; width:250px;">
-    <input id="nameInput" placeholder="Digite seu primeiro nome">
-    <div id="error">Digite seu nome para continuar</div>
-    <button style="margin-top:10px;" onclick="start()">Iniciar atendimento</button>
-  </div>
+  <button onclick="start()">Continuar</button>
 </div>
 
-<!-- ===== CHAT ===== -->
-
 <div id="chat">
-  <div id="chatHeader">
-    Atendimento inteligente 24 House • Online 24h
-  </div>
+  <div class="header">Plataforma Inteligente de Atendimento 24h</div>
   <div id="messages"></div>
 </div>
 
 <script>
 let userName = "";
 
-function showNameInput(){
-  document.getElementById("nameArea").style.display="block";
+function start(){
+  document.getElementById("entry").style.display = "none";
+  document.getElementById("chat").style.display = "flex";
+
+  askName();
 }
 
-function start(){
-  const name = document.getElementById("nameInput").value.trim();
-  if(name.length < 1){
-    document.getElementById("error").style.display="block";
-    return;
-  }
+function askName(){
+  botMessage("Olá, seja bem-vindo ao 24 House. Qual é o seu primeiro nome?");
+  
+  const input = document.createElement("input");
+  input.placeholder = "Digite seu primeiro nome";
+  input.style.padding = "10px";
+  input.style.borderRadius = "8px";
+  input.style.border = "none";
+  input.style.marginTop = "10px";
 
-  userName = name;
-  document.getElementById("entry").style.display="none";
-  document.getElementById("chat").style.display="flex";
+  const btn = document.createElement("button");
+  btn.innerText = "Confirmar";
+  btn.style.marginLeft = "10px";
+  btn.onclick = ()=>{
+    if(input.value.trim().length < 1){
+      alert("Digite seu nome para continuar.");
+      return;
+    }
+    userName = input.value.trim();
+    userMessage(userName);
+    input.remove();
+    btn.remove();
+    botMessage(`Prazer, ${userName}. Como posso te ajudar hoje?`);
+    showOptions([
+      "Fotos do salão",
+      "Pacotes promocionais",
+      "Agenda disponível",
+      "Falar com atendente humano"
+    ]);
+  };
 
-  botMessage(`Olá, ${userName}. Sou a assistente inteligente da 24 House. Como posso te ajudar hoje?`);
+  const container = document.createElement("div");
+  container.style.marginTop = "10px";
+  container.appendChild(input);
+  container.appendChild(btn);
 
-  showOptions([
-    "Fotos do espaço",
-    "Pacotes disponíveis",
-    "Ver agenda",
-    "Falar com atendente"
-  ]);
+  document.getElementById("messages").appendChild(container);
+  scrollDown();
 }
 
 function botMessage(text){
@@ -265,26 +230,51 @@ function showOptions(options){
 
 function handleOption(option){
 
-  if(option === "Fotos do espaço"){
-    botMessage("Nosso espaço conta com piscina, churrasqueira e estrutura completa para eventos.");
-    showOptions(["Pacotes disponíveis", "Ver agenda", "Falar com atendente"]);
+  if(option === "Fotos do salão"){
+    botMessage("Aqui estão algumas fotos do nosso espaço:");
+
+    showImage("salão 1.png");
+    showImage("salão 2.png");
+    showImage("salão 3.png");
+
+    showOptions(["Pacotes promocionais", "Agenda disponível", "Falar com atendente humano"]);
   }
 
-  if(option === "Pacotes disponíveis"){
-    botMessage("Pacote Essencial: 8h por R$799\nPacote Premium: 8h + DJ por R$990");
-    showOptions(["Ver agenda", "Falar com atendente"]);
+  if(option === "Pacotes promocionais"){
+    botMessage("Pacote 1: 8h de festa + piscina por R$799\nPacote 2: 8h + DJ + som por R$990");
+    showOptions(["Agendar horário", "Falar com atendente humano"]);
   }
 
-  if(option === "Ver agenda" || option === "Falar com atendente"){
+  if(option === "Agenda disponível" || option === "Agendar horário" || option === "Falar com atendente humano"){
     redirectWhatsApp();
   }
 }
 
+function showImage(src){
+  const card = document.createElement("div");
+  card.className = "image-card";
+
+  const img = document.createElement("img");
+  img.src = src;
+
+  const link = document.createElement("a");
+  link.href = src;
+  link.download = src;
+  link.innerText = "Baixar imagem";
+  link.className = "download-btn";
+
+  card.appendChild(img);
+  card.appendChild(link);
+
+  document.getElementById("messages").appendChild(card);
+  scrollDown();
+}
+
 function redirectWhatsApp(){
-  const message = `Olá, meu nome é ${userName}. Gostaria de informações sobre a 24 House.`;
-  const url = `https://wa.me/5551984182204?text=${encodeURIComponent(message)}`;
+  const message = `Olá, meu nome é ${userName}. Gostaria de informações sobre o salão 24 House.`;
+  const url = `https://wa.me/555186267502?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
-  botMessage("Redirecionando para atendimento via WhatsApp...");
+  botMessage("Redirecionando para WhatsApp...");
 }
 
 function scrollDown(){

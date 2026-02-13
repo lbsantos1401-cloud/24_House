@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>24 House Atendimento</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#000;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+#entry{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100%;
+  gap:20px;
+}
+
+.logo{
+  font-size:60px;
+  color:#c23bff;
+  text-shadow:0 0 20px #c23bff;
+  border:4px solid #c23bff;
+  border-radius:50%;
+  padding:40px;
+}
+
+input{
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  width:250px;
+  text-align:center;
+}
+
+button{
+  padding:12px 25px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.primary{
+  background:#c23bff;
+  color:black;
+}
+
+#chat{
+  display:none;
+  flex-direction:column;
+  height:100%;
+}
+
+#messages{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+}
+
+.msg{
+  margin-bottom:15px;
+  padding:10px 15px;
+  border-radius:15px;
+  max-width:70%;
+}
+
+.bot{
+  background:#222;
+}
+
+.user{
+  background:#c23bff;
+  color:black;
+  align-self:flex-end;
+}
+
+.options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="entry">
+  <div class="logo">24</div>
+  <input id="nameInput" placeholder="Digite seu primeiro nome">
+  <button class="primary" onclick="start()">Iniciar atendimento</button>
+  <div id="error" style="color:red; display:none;">Digite seu primeiro nome para iniciar o atendimento</div>
+</div>
+
+<div id="chat">
+  <div id="messages"></div>
+</div>
+
+<script>
+let userName = "";
+
+function start(){
+  const name = document.getElementById("nameInput").value.trim();
+  if(name.length < 1){
+    document.getElementById("error").style.display = "block";
+    return;
+  }
+
+  userName = name;
+  document.getElementById("entry").style.display = "none";
+  document.getElementById("chat").style.display = "flex";
+
+  botMessage(`Olá, ${userName}, sou representante do salão 24 House. Como posso te ajudar?`);
+
+  showOptions([
+    "Fotos do salão",
+    "Pacotes promocionais",
+    "Agenda disponível",
+    "Falar com atendente humano"
+  ]);
+}
+
+function botMessage(text){
+  const msg = document.createElement("div");
+  msg.className = "msg bot";
+  msg.innerText = text;
+  document.getElementById("messages").appendChild(msg);
+  scrollDown();
+}
+
+function userMessage(text){
+  const msg = document.createElement("div");
+  msg.className = "msg user";
+  msg.innerText = text;
+  document.getElementById("messages").appendChild(msg);
+  scrollDown();
+}
+
+function showOptions(options){
+  const container = document.createElement("div");
+  container.className = "options";
+
+  options.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = ()=>{
+      userMessage(opt);
+      container.remove();
+      handleOption(opt);
+    };
+    container.appendChild(btn);
+  });
+
+  document.getElementById("messages").appendChild(container);
+  scrollDown();
+}
+
+function handleOption(option){
+
+  if(option === "Fotos do salão"){
+    botMessage(`${userName}, nosso espaço conta com piscina, churrasqueira e estrutura completa para festas.`);
+    showOptions(["Pacotes promocionais", "Agenda disponível", "Falar com atendente humano"]);
+  }
+
+  if(option === "Pacotes promocionais"){
+    botMessage("Pacote 1: 8h de festa + piscina por R$799\nPacote 2: 8h + DJ + som por R$990");
+    showOptions(["Agendar horário", "Falar com atendente humano"]);
+  }
+
+  if(option === "Agenda disponível" || option === "Agendar horário" || option === "Falar com atendente humano"){
+    redirectWhatsApp();
+  }
+}
+
+function redirectWhatsApp(){
+  const message = `Olá, meu nome é ${userName}. Gostaria de informações sobre o salão 24 House.`;
+  const url = `https://wa.me/5551984182204?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+  botMessage("Redirecionando para WhatsApp...");
+}
+
+function scrollDown(){
+  const messages = document.getElementById("messages");
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>

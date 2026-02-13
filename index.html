@@ -9,8 +9,8 @@
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
-  background:#0d0d0f;
-  color:white;
+  background:#0d0f14;
+  color:#eaeaea;
   display:flex;
   flex-direction:column;
   height:100vh;
@@ -25,35 +25,51 @@ body{
   gap:25px;
 }
 
-.logo{
+.logo-container{
+  text-align:center;
+}
+
+.logo-circle{
+  border:2px solid #7f3cff;
+  border-radius:50%;
+  padding:50px;
+  box-shadow:0 0 40px rgba(127,60,255,0.4);
+}
+
+.logo-24{
   font-size:60px;
+  color:#b366ff;
+  text-shadow:0 0 20px #7f3cff;
   font-weight:bold;
-  border:2px solid #2a2a2e;
-  border-radius:20px;
-  padding:30px 50px;
-  background:#141417;
-  box-shadow:0 0 40px rgba(194,59,255,0.3);
 }
 
-.logo span:first-child{
-  color:#c23bff;
-  text-shadow:0 0 20px #c23bff;
-}
-
-.logo span:last-child{
-  background:linear-gradient(90deg,#c23bff,#ffffff,#c23bff);
+.logo-house{
+  font-size:28px;
+  margin-top:10px;
+  background:linear-gradient(90deg,#b366ff,#7f3cff,#d9a3ff);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+  animation:glow 3s infinite alternate;
+}
+
+@keyframes glow{
+  from{filter:brightness(1);}
+  to{filter:brightness(1.4);}
 }
 
 button{
-  padding:12px 25px;
-  border-radius:10px;
+  padding:12px 30px;
+  border-radius:8px;
   border:none;
   cursor:pointer;
   font-weight:bold;
-  background:#c23bff;
-  color:black;
+  background:#7f3cff;
+  color:white;
+  transition:0.2s;
+}
+
+button:hover{
+  background:#9a5cff;
 }
 
 #chat{
@@ -62,34 +78,28 @@ button{
   height:100%;
 }
 
-.header{
-  padding:15px;
-  background:#141417;
-  border-bottom:1px solid #2a2a2e;
-  text-align:center;
-  font-weight:bold;
-}
-
 #messages{
   flex:1;
-  padding:20px;
+  padding:30px;
   overflow-y:auto;
 }
 
 .msg{
-  margin-bottom:15px;
-  padding:12px 18px;
+  margin-bottom:20px;
+  padding:15px 18px;
   border-radius:12px;
-  max-width:75%;
+  max-width:70%;
+  line-height:1.5;
 }
 
 .bot{
-  background:#1e1e22;
+  background:#1a1f2b;
+  border:1px solid #2a2f3a;
 }
 
 .user{
-  background:#c23bff;
-  color:black;
+  background:#7f3cff;
+  color:white;
   align-self:flex-end;
 }
 
@@ -97,34 +107,30 @@ button{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
-  margin-top:10px;
+  margin-top:15px;
 }
 
-.options button{
-  background:#2a2a2e;
-  color:white;
+.image-container{
+  margin-top:15px;
 }
 
-.image-card{
-  background:#1e1e22;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:15px;
-}
-
-.image-card img{
+.image-container img{
   width:100%;
-  border-radius:8px;
+  max-width:300px;
+  border-radius:10px;
+  margin-bottom:10px;
+  border:1px solid #333;
 }
 
 .download-btn{
-  margin-top:8px;
-  background:#c23bff;
-  color:black;
-  padding:8px;
-  border-radius:6px;
-  text-decoration:none;
   display:inline-block;
+  margin-bottom:20px;
+  padding:8px 15px;
+  background:#222;
+  color:#b366ff;
+  text-decoration:none;
+  border-radius:6px;
+  font-size:14px;
 }
 </style>
 </head>
@@ -132,91 +138,87 @@ button{
 <body>
 
 <div id="entry">
-  <div class="logo">
-    <span>24</span> <span>House</span>
+  <div class="logo-container">
+    <div class="logo-circle">
+      <div class="logo-24">24</div>
+      <div class="logo-house">House</div>
+    </div>
   </div>
-  <button onclick="start()">Continuar</button>
+
+  <button onclick="goToChat()">Continuar</button>
 </div>
 
 <div id="chat">
-  <div class="header">Plataforma Inteligente de Atendimento 24h</div>
   <div id="messages"></div>
 </div>
 
 <script>
 let userName = "";
 
-function start(){
-  document.getElementById("entry").style.display = "none";
-  document.getElementById("chat").style.display = "flex";
+function goToChat(){
+  document.getElementById("entry").style.display="none";
+  document.getElementById("chat").style.display="flex";
 
-  askName();
-}
-
-function askName(){
-  botMessage("Olá, seja bem-vindo ao 24 House. Qual é o seu primeiro nome?");
-  
-  const input = document.createElement("input");
-  input.placeholder = "Digite seu primeiro nome";
-  input.style.padding = "10px";
-  input.style.borderRadius = "8px";
-  input.style.border = "none";
-  input.style.marginTop = "10px";
-
-  const btn = document.createElement("button");
-  btn.innerText = "Confirmar";
-  btn.style.marginLeft = "10px";
-  btn.onclick = ()=>{
-    if(input.value.trim().length < 1){
-      alert("Digite seu nome para continuar.");
-      return;
-    }
-    userName = input.value.trim();
-    userMessage(userName);
-    input.remove();
-    btn.remove();
-    botMessage(`Prazer, ${userName}. Como posso te ajudar hoje?`);
-    showOptions([
-      "Fotos do salão",
-      "Pacotes promocionais",
-      "Agenda disponível",
-      "Falar com atendente humano"
-    ]);
-  };
-
-  const container = document.createElement("div");
-  container.style.marginTop = "10px";
-  container.appendChild(input);
-  container.appendChild(btn);
-
-  document.getElementById("messages").appendChild(container);
-  scrollDown();
+  botMessage("Olá 👋 Sou a plataforma inteligente de atendimento 24h do 24 House.\n\nQual é o seu primeiro nome?");
 }
 
 function botMessage(text){
-  const msg = document.createElement("div");
-  msg.className = "msg bot";
-  msg.innerText = text;
+  const msg=document.createElement("div");
+  msg.className="msg bot";
+  msg.innerText=text;
   document.getElementById("messages").appendChild(msg);
+
+  if(userName===""){
+    askName();
+  }
+
   scrollDown();
 }
 
+function askName(){
+  const input=document.createElement("input");
+  input.placeholder="Digite seu primeiro nome";
+  input.style.padding="10px";
+  input.style.borderRadius="8px";
+  input.style.marginTop="10px";
+
+  input.onkeydown=function(e){
+    if(e.key==="Enter"){
+      userName=input.value.trim();
+      if(userName.length>0){
+        userMessage(userName);
+        input.remove();
+        botMessage(`Prazer, ${userName}. Como posso te ajudar hoje?`);
+        showOptions([
+          "Fotos do salão",
+          "Pacotes promocionais",
+          "Agenda disponível",
+          "Falar com atendente humano"
+        ]);
+      }
+    }
+  };
+
+  document.getElementById("messages").appendChild(input);
+  input.focus();
+}
+
 function userMessage(text){
-  const msg = document.createElement("div");
-  msg.className = "msg user";
-  msg.innerText = text;
+  const msg=document.createElement("div");
+  msg.className="msg user";
+  msg.innerText=text;
   document.getElementById("messages").appendChild(msg);
   scrollDown();
 }
 
 function showOptions(options){
-  const container = document.createElement("div");
-  container.className = "options";
+  const container=document.createElement("div");
+  container.className="options";
 
   options.forEach(opt=>{
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = ()=>{
+    const btn=document.createElement("button");
+    btn.innerText=opt;
+    btn.onclick=()=>{
       userMessage(opt);
       container.remove();
       handleOption(opt);
@@ -230,56 +232,62 @@ function showOptions(options){
 
 function handleOption(option){
 
-  if(option === "Fotos do salão"){
-    botMessage("Aqui estão algumas fotos do nosso espaço:");
+  if(option==="Fotos do salão"){
+    botMessage(`${userName}, aqui estão algumas imagens do nosso espaço:`);
 
-    showImage("salão 1.png");
-    showImage("salão 2.png");
-    showImage("salão 3.png");
+    showImages();
 
-    showOptions(["Pacotes promocionais", "Agenda disponível", "Falar com atendente humano"]);
+    showOptions([
+      "Pacotes promocionais",
+      "Agenda disponível",
+      "Falar com atendente humano"
+    ]);
   }
 
-  if(option === "Pacotes promocionais"){
-    botMessage("Pacote 1: 8h de festa + piscina por R$799\nPacote 2: 8h + DJ + som por R$990");
-    showOptions(["Agendar horário", "Falar com atendente humano"]);
+  if(option==="Pacotes promocionais"){
+    botMessage("Pacote 1: 8h + piscina por R$799\nPacote 2: 8h + DJ + som por R$990");
+    showOptions(["Agendar horário","Falar com atendente humano"]);
   }
 
-  if(option === "Agenda disponível" || option === "Agendar horário" || option === "Falar com atendente humano"){
+  if(option==="Agenda disponível" || option==="Agendar horário" || option==="Falar com atendente humano"){
     redirectWhatsApp();
   }
 }
 
-function showImage(src){
-  const card = document.createElement("div");
-  card.className = "image-card";
+function showImages(){
+  const container=document.createElement("div");
+  container.className="image-container";
 
-  const img = document.createElement("img");
-  img.src = src;
+  const images=["salao1.png","salao2.png","salao3.png"];
 
-  const link = document.createElement("a");
-  link.href = src;
-  link.download = src;
-  link.innerText = "Baixar imagem";
-  link.className = "download-btn";
+  images.forEach(imgName=>{
+    const img=document.createElement("img");
+    img.src=imgName;
 
-  card.appendChild(img);
-  card.appendChild(link);
+    const download=document.createElement("a");
+    download.href=imgName;
+    download.download=imgName;
+    download.innerText="Baixar imagem";
+    download.className="download-btn";
 
-  document.getElementById("messages").appendChild(card);
+    container.appendChild(img);
+    container.appendChild(download);
+  });
+
+  document.getElementById("messages").appendChild(container);
   scrollDown();
 }
 
 function redirectWhatsApp(){
-  const message = `Olá, meu nome é ${userName}. Gostaria de informações sobre o salão 24 House.`;
-  const url = `https://wa.me/555186267502?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
-  botMessage("Redirecionando para WhatsApp...");
+  const message=`Olá, meu nome é ${userName}. Gostaria de informações sobre o 24 House.`;
+  const url=`https://wa.me/555186267502?text=${encodeURIComponent(message)}`;
+  window.open(url,"_blank");
+  botMessage("Redirecionando para atendimento humano no WhatsApp...");
 }
 
 function scrollDown(){
-  const messages = document.getElementById("messages");
-  messages.scrollTop = messages.scrollHeight;
+  const messages=document.getElementById("messages");
+  messages.scrollTop=messages.scrollHeight;
 }
 </script>
 

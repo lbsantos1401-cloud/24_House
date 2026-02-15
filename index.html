@@ -9,216 +9,199 @@
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
-  background:#0d0f14;
-  color:#eaeaea;
+  background:#1e1e22;
+  background-image: radial-gradient(circle at 20% 30%, #2a2a30 0%, #1e1e22 60%);
+  color:white;
   display:flex;
-  flex-direction:column;
+  justify-content:center;
+  align-items:center;
   height:100vh;
 }
 
-#entry{
+#app{
+  width:420px;
+  height:720px;
+  background:#2a2a30;
+  border-radius:20px;
+  box-shadow:0 0 40px rgba(0,0,0,0.6);
   display:flex;
   flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  height:100%;
-  gap:25px;
+  overflow:hidden;
 }
 
-.logo-container{
+.header{
   text-align:center;
+  padding:20px;
+  border-bottom:1px solid #444;
 }
 
-.logo-circle{
-  border:2px solid #7f3cff;
-  border-radius:50%;
-  padding:50px;
-  box-shadow:0 0 40px rgba(127,60,255,0.4);
-}
-
-.logo-24{
-  font-size:60px;
-  color:#b366ff;
-  text-shadow:0 0 20px #7f3cff;
+.logo{
+  font-size:48px;
   font-weight:bold;
 }
 
-.logo-house{
+.logo span{
+  display:block;
   font-size:28px;
-  margin-top:10px;
-  background:linear-gradient(90deg,#b366ff,#7f3cff,#d9a3ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:glow 3s infinite alternate;
+  margin-top:-10px;
 }
 
-@keyframes glow{
-  from{filter:brightness(1);}
-  to{filter:brightness(1.4);}
-}
-
-button{
-  padding:12px 30px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
-  background:#7f3cff;
-  color:white;
-  transition:0.2s;
-}
-
-button:hover{
-  background:#9a5cff;
-}
-
-#chat{
-  display:none;
-  flex-direction:column;
-  height:100%;
+.neon{
+  color:#b026ff;
+  text-shadow:0 0 15px #b026ff;
 }
 
 #messages{
   flex:1;
-  padding:30px;
+  padding:20px;
   overflow-y:auto;
 }
 
 .msg{
-  margin-bottom:20px;
-  padding:15px 18px;
-  border-radius:12px;
-  max-width:70%;
-  line-height:1.5;
+  padding:12px 16px;
+  border-radius:15px;
+  margin-bottom:12px;
+  max-width:80%;
+  line-height:1.4;
 }
 
 .bot{
-  background:#1a1f2b;
-  border:1px solid #2a2f3a;
+  background:#4a0072;
+  border:1px solid #ddd;
 }
 
 .user{
-  background:#7f3cff;
+  background:#000;
   color:white;
   align-self:flex-end;
 }
 
 .options{
   display:flex;
-  flex-wrap:wrap;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+}
+
+.options button{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  background:#b026ff;
+  color:black;
+  font-weight:bold;
+}
+
+.select-container{
+  display:flex;
   gap:10px;
-  margin-top:15px;
+  margin-top:10px;
 }
 
-.image-container{
-  margin-top:15px;
+.select-box{
+  flex:1;
+  height:120px;
+  overflow-y:auto;
+  background:#333;
+  padding:5px;
+  border-radius:8px;
 }
 
-.image-container img{
+.select-box button{
   width:100%;
-  max-width:300px;
-  border-radius:10px;
-  margin-bottom:10px;
-  border:1px solid #333;
+  margin-bottom:5px;
+  padding:6px;
+  border:none;
+  cursor:pointer;
+  background:#444;
+  color:white;
+  border-radius:6px;
 }
 
-.download-btn{
-  display:inline-block;
-  margin-bottom:20px;
-  padding:8px 15px;
-  background:#222;
-  color:#b366ff;
-  text-decoration:none;
-  border-radius:6px;
-  font-size:14px;
+.footer{
+  padding:15px;
+  border-top:1px solid #444;
+  text-align:center;
+}
+
+.primary-btn{
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#b026ff;
+  font-weight:bold;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div id="entry">
-  <div class="logo-container">
-    <div class="logo-circle">
-      <div class="logo-24">24</div>
-      <div class="logo-house">House</div>
+<div id="app">
+
+  <div class="header">
+    <div class="logo">
+      <div class="neon">24</div>
+      <span class="neon">House</span>
     </div>
   </div>
 
-  <button onclick="goToChat()">Continuar</button>
-</div>
-
-<div id="chat">
   <div id="messages"></div>
+
+  <div class="footer">
+    <button class="primary-btn" onclick="start()">Iniciar Atendimento</button>
+  </div>
+
 </div>
 
 <script>
+
 let userName = "";
+let selectedMonth = "";
+let selectedDay = "";
 
-function goToChat(){
-  document.getElementById("entry").style.display="none";
-  document.getElementById("chat").style.display="flex";
+const driveLink = "https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6";
+const whatsappNumber = "555186267502";
 
-  botMessage("Olá 👋 Sou a plataforma inteligente de atendimento 24h do 24 House.\n\nQual é o seu primeiro nome?");
+function start(){
+  userName = prompt("Digite seu primeiro nome:");
+  if(!userName) return;
+
+  botMessage(`Olá, ${userName}. Seja bem vindo(a). Sou o atendente inteligente da casa de festas 24 House. Como posso te ajudar?`);
+
+  showOptions([
+    "Fotos do salão",
+    "Pacotes promocionais e valores",
+    "Agenda disponível",
+    "Falar com atendente humano"
+  ]);
 }
 
 function botMessage(text){
-  const msg=document.createElement("div");
-  msg.className="msg bot";
-  msg.innerText=text;
+  const msg = document.createElement("div");
+  msg.className = "msg bot";
+  msg.innerText = text;
   document.getElementById("messages").appendChild(msg);
-
-  if(userName===""){
-    askName();
-  }
-
   scrollDown();
 }
 
-function askName(){
-  const input=document.createElement("input");
-  input.placeholder="Digite seu primeiro nome";
-  input.style.padding="10px";
-  input.style.borderRadius="8px";
-  input.style.marginTop="10px";
-
-  input.onkeydown=function(e){
-    if(e.key==="Enter"){
-      userName=input.value.trim();
-      if(userName.length>0){
-        userMessage(userName);
-        input.remove();
-        botMessage(`Prazer, ${userName}. Como posso te ajudar hoje?`);
-        showOptions([
-          "Fotos do salão",
-          "Pacotes promocionais",
-          "Agenda disponível",
-          "Falar com atendente humano"
-        ]);
-      }
-    }
-  };
-
-  document.getElementById("messages").appendChild(input);
-  input.focus();
-}
-
 function userMessage(text){
-  const msg=document.createElement("div");
-  msg.className="msg user";
-  msg.innerText=text;
+  const msg = document.createElement("div");
+  msg.className = "msg user";
+  msg.innerText = text;
   document.getElementById("messages").appendChild(msg);
   scrollDown();
 }
 
 function showOptions(options){
-  const container=document.createElement("div");
-  container.className="options";
+  const container = document.createElement("div");
+  container.className = "options";
 
   options.forEach(opt=>{
-    const btn=document.createElement("button");
-    btn.innerText=opt;
-    btn.onclick=()=>{
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = ()=>{
       userMessage(opt);
       container.remove();
       handleOption(opt);
@@ -232,63 +215,120 @@ function showOptions(options){
 
 function handleOption(option){
 
-  if(option==="Fotos do salão"){
-    botMessage(`${userName}, aqui estão algumas imagens do nosso espaço:`);
+  if(option === "Fotos do salão"){
+    botMessage(`Perfeito ${userName}! Você pode visualizar todas as fotos do nosso espaço no link abaixo:\n\n${driveLink}`);
+    showOptions(["Pacotes promocionais e valores","Agenda disponível","Falar com atendente humano"]);
+  }
 
-    showImages();
+  if(option === "Pacotes promocionais e valores"){
+    botMessage(`Nosso foco é garantir boas lembranças do seu evento conosco.
+
+Pacote 1:
+8 horas de uso do ambiente + piscina + churrasqueira + espetos + carvão por R$799,00.
+
+Pacote 2:
+Tudo do pacote 1 + som profissional e DJ por R$990,00.
+
+Gostaria de:`);
 
     showOptions([
-      "Pacotes promocionais",
-      "Agenda disponível",
+      "Verificar disponibilidade de data",
+      "Ver algumas fotos do nosso salão",
+      "Formas de pagamento",
       "Falar com atendente humano"
     ]);
   }
 
-  if(option==="Pacotes promocionais"){
-    botMessage("Pacote 1: 8h + piscina por R$799\nPacote 2: 8h + DJ + som por R$990");
-    showOptions(["Agendar horário","Falar com atendente humano"]);
+  if(option === "Ver algumas fotos do nosso salão"){
+    botMessage(`Você pode ver todas as fotos neste link:\n\n${driveLink}`);
+    showOptions(["Falar com atendente humano"]);
   }
 
-  if(option==="Agenda disponível" || option==="Agendar horário" || option==="Falar com atendente humano"){
-    redirectWhatsApp();
+  if(option === "Formas de pagamento"){
+    botMessage("Aceitamos cartões de crédito, pix e dinheiro.");
+    showOptions(["Falar com atendente humano"]);
+  }
+
+  if(option === "Verificar disponibilidade de data"){
+    showCalendarSelector();
+  }
+
+  if(option === "Agenda disponível"){
+    redirectWhatsApp("Olá, gostaria de verificar a agenda disponível.");
+  }
+
+  if(option === "Falar com atendente humano"){
+    redirectWhatsApp("Olá, gostaria de falar com um atendente humano.");
   }
 }
 
-function showImages(){
-  const container=document.createElement("div");
-  container.className="image-container";
+function showCalendarSelector(){
 
-  const images=["salao1.png","salao2.png","salao3.png"];
+  botMessage(`${userName}, escolha o mês e o dia de 2026 para seu evento:`);
 
-  images.forEach(imgName=>{
-    const img=document.createElement("img");
-    img.src=imgName;
+  const container = document.createElement("div");
+  container.className = "select-container";
 
-    const download=document.createElement("a");
-    download.href=imgName;
-    download.download=imgName;
-    download.innerText="Baixar imagem";
-    download.className="download-btn";
+  const months = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
 
-    container.appendChild(img);
-    container.appendChild(download);
+  const daysInMonth = {
+    "Janeiro":31,"Fevereiro":28,"Março":31,"Abril":30,"Maio":31,"Junho":30,
+    "Julho":31,"Agosto":31,"Setembro":30,"Outubro":31,"Novembro":30,"Dezembro":31
+  };
+
+  const monthBox = document.createElement("div");
+  monthBox.className = "select-box";
+
+  const dayBox = document.createElement("div");
+  dayBox.className = "select-box";
+
+  months.forEach(m=>{
+    const btn = document.createElement("button");
+    btn.innerText = m;
+    btn.onclick = ()=>{
+      selectedMonth = m;
+      dayBox.innerHTML="";
+      for(let i=1;i<=daysInMonth[m];i++){
+        const dayBtn = document.createElement("button");
+        dayBtn.innerText = i;
+        dayBtn.onclick = ()=> selectedDay = i;
+        dayBox.appendChild(dayBtn);
+      }
+    };
+    monthBox.appendChild(btn);
   });
 
+  container.appendChild(monthBox);
+  container.appendChild(dayBox);
+
   document.getElementById("messages").appendChild(container);
+
+  const verifyBtn = document.createElement("button");
+  verifyBtn.innerText = "Verificar disponibilidade";
+  verifyBtn.className = "primary-btn";
+  verifyBtn.onclick = ()=>{
+    if(selectedMonth && selectedDay){
+      redirectWhatsApp(`Olá, gostaria de saber se a data ${selectedDay} de ${selectedMonth} de 2026 está disponível.`);
+    }
+  };
+
+  document.getElementById("messages").appendChild(verifyBtn);
   scrollDown();
 }
 
-function redirectWhatsApp(){
-  const message=`Olá, meu nome é ${userName}. Gostaria de informações sobre o 24 House.`;
-  const url=`https://wa.me/555186267502?text=${encodeURIComponent(message)}`;
-  window.open(url,"_blank");
-  botMessage("Redirecionando para atendimento humano no WhatsApp...");
+function redirectWhatsApp(message){
+  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
 }
 
 function scrollDown(){
-  const messages=document.getElementById("messages");
-  messages.scrollTop=messages.scrollHeight;
+  const messages = document.getElementById("messages");
+  messages.scrollTop = messages.scrollHeight;
 }
+
 </script>
 
 </body>

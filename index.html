@@ -1,441 +1,392 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>24 House | Plataforma Inteligente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 House | Plataforma Inteligente</title>
+    <style>
+        :root {
+            --roxo-neon: #bc13fe;
+            --cinza-escuro: #1a1a1f;
+            --cinza-claro: #d8d8d8;
+            --preto-deep: #0e0e11;
+        }
 
-<style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #121214;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
 
-body{
-  margin:0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background:#1c1c21;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:white;
-}
+        /* ===== APP CONTAINER ===== */
+        #app {
+            width: 100%;
+            max-width: 420px;
+            height: 90vh;
+            max-height: 800px;
+            background: #25252b;
+            border-radius: 30px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 4px solid #333;
+        }
 
-/* ===== APP BASE ===== */
+        /* ===== TELA INICIAL ===== */
+        #welcomeScreen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--cinza-escuro);
+            position: relative;
+            z-index: 1;
+        }
 
-#app{
-  width:420px;
-  height:720px;
-  background:#25252b;
-  border-radius:22px;
-  box-shadow:0 0 60px rgba(0,0,0,0.7);
-  overflow:hidden;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-}
+        /* SPEAKERS DE FUNDO */
+        .speakers {
+            display: flex;
+            justify-content: space-between;
+            width: 85%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.3;
+            pointer-events: none;
+        }
 
-/* ===== PRIMEIRA TELA REFINADA ===== */
+        .speaker {
+            width: 55px;
+            height: 130px;
+            background: #111;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px 0;
+            border: 1px solid #333;
+        }
 
-#welcomeScreen{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:40px;
-  text-align:center;
-  background:#1a1a1f; /* cinza escuro */
-  position:relative;
-}
+        .woofer {
+            width: 35px;
+            height: 35px;
+            background: #222;
+            border-radius: 50%;
+            border: 2px solid var(--roxo-neon);
+            animation: pulse 1.5s infinite ease-in-out;
+        }
 
-.logo{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  line-height:1;
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 10px var(--roxo-neon); }
+        }
 
-/* 24 */
-.logo::before{
-  content:"24";
-  font-size:110px;
-  font-weight:900;
-  color:#6f00ff; /* roxo escuro */
-  text-shadow:
-    -3px -3px 0 #000,
-     3px -3px 0 #000,
-    -3px  3px 0 #000,
-     3px  3px 0 #000,
-     0 0 25px rgba(111,0,255,0.9);
-  display:block;
-}
+        /* LOGO ESTILIZADA */
+        .logo-container {
+            text-align: center;
+            z-index: 10;
+            margin-bottom: 50px;
+        }
 
-/* House */
-.logo span{
-  font-size:42px;
-  font-weight:700;
-  color:#d8d8d8; /* cinza claro */
-  text-shadow:
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000,
-     0 0 12px rgba(255,255,255,0.5);
-  margin-top:-15px;
-}
+        .logo-24 {
+            font-size: 110px;
+            font-weight: 900;
+            color: var(--roxo-neon);
+            line-height: 0.8;
+            margin: 0;
+            text-shadow: 
+                -3px -3px 0 #000, 3px -3px 0 #000,
+                -3px 3px 0 #000, 3px 3px 0 #000,
+                0 0 25px rgba(188, 19, 254, 0.7);
+        }
 
-.speakers{
-  display:flex;
-  justify-content:space-between;
-  width:100%;
-  padding:0 40px;
-  position:absolute;
-  top:35%;
-}
+        .logo-house {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--cinza-claro);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
 
-.speaker{
-  width:60px;
-  height:140px;
-  background:#111;
-  border-radius:12px;
-  box-shadow:0 0 20px rgba(176,38,255,0.4);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:space-around;
-  padding:10px 0;
-}
+        .start-btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            background: var(--roxo-neon);
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.4);
+            z-index: 10;
+        }
 
-.tweeter{
-  width:25px;
-  height:25px;
-  background:#333;
-  border-radius:50%;
-  border:2px solid #b026ff;
-}
+        .start-btn:hover {
+            transform: scale(1.05);
+            background: #a312db;
+        }
 
-.woofer{
-  width:40px;
-  height:40px;
-  background:#222;
-  border-radius:50%;
-  border:3px solid #b026ff;
-  animation: pulse 1.2s infinite;
-}
+        /* ===== TELA DE CHAT ===== */
+        #chatScreen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            background: #1c1c21;
+        }
 
-@keyframes pulse{
-  0%{ transform:scale(1);}
-  50%{ transform:scale(1.08);}
-  100%{ transform:scale(1);}
-}
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: var(--preto-deep);
+            border-bottom: 1px solid #333;
+            font-weight: bold;
+            color: var(--roxo-neon);
+        }
 
-.start-btn{
-  padding:14px 30px;
-  border:none;
-  border-radius:12px;
-  background:#b026ff;
-  font-weight:bold;
-  cursor:pointer;
-  font-size:16px;
-}
+        #messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-/* ===== CHAT ===== */
+        .msg {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            font-size: 15px;
+            line-height: 1.5;
+        }
 
-#chatScreen{
-  display:none;
-  flex:1;
-  flex-direction:column;
-}
+        .bot {
+            background: #2d2d35;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
 
-.header{
-  padding:15px;
-  text-align:center;
-  border-bottom:1px solid #3a3a42;
-  font-weight:bold;
-  color:#b026ff;
-}
+        .user {
+            background: var(--roxo-neon);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
 
-#messages{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
-}
+        /* ÁREA DE INPUT */
+        #inputArea {
+            padding: 15px;
+            background: var(--preto-deep);
+            display: none;
+            gap: 10px;
+        }
 
-.msg{
-  padding:12px 16px;
-  border-radius:16px;
-  margin-bottom:12px;
-  max-width:80%;
-  line-height:1.4;
-}
+        #userInput {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: 1px solid #444;
+            background: #25252b;
+            color: white;
+            outline: none;
+        }
 
-.bot{
-  background:#4a0072;
-  border:1px solid #ccc;
-}
+        .send-btn {
+            background: var(--roxo-neon);
+            border: none;
+            color: white;
+            padding: 0 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-.user{
-  background:#000;
-  color:white;
-  align-self:flex-end;
-}
+        /* OPÇÕES */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 5px;
+        }
 
-.options{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-top:10px;
-}
+        .options button {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--roxo-neon);
+            background: rgba(188, 19, 254, 0.1);
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
 
-.options button{
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  background:#b026ff;
-  font-weight:bold;
-}
+        .options button:hover {
+            background: var(--roxo-neon);
+        }
 
-.select-container{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-}
+        .select-box {
+            display: flex;
+            gap: 5px;
+            height: 120px;
+            overflow-y: auto;
+            background: #111;
+            padding: 10px;
+            border-radius: 10px;
+        }
 
-.select-box{
-  flex:1;
-  height:140px;
-  overflow-y:auto;
-  background:#333;
-  padding:5px;
-  border-radius:8px;
-}
-
-.select-box button{
-  width:100%;
-  margin-bottom:5px;
-  padding:6px;
-  border:none;
-  cursor:pointer;
-  background:#444;
-  color:white;
-  border-radius:6px;
-}
-
-.primary-btn{
-  margin-top:10px;
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#b026ff;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-</style>
+        .select-box button {
+            display: block;
+            width: 100%;
+            margin-bottom: 4px;
+            padding: 8px;
+            background: #333;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
 
 <div id="app">
+    <div id="welcomeScreen">
+        <div class="speakers">
+            <div class="speaker"><div class="woofer"></div><div class="woofer"></div></div>
+            <div class="speaker"><div class="woofer"></div><div class="woofer"></div></div>
+        </div>
 
-<!-- TELA 1 -->
-<div id="welcomeScreen">
+        <div class="logo-container">
+            <h1 class="logo-24">24</h1>
+            <h2 class="logo-house">House</h2>
+        </div>
 
-  <div class="speakers">
-    <div class="speaker">
-      <div class="tweeter"></div>
-      <div class="woofer"></div>
+        <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
     </div>
-    <div class="speaker">
-      <div class="tweeter"></div>
-      <div class="woofer"></div>
+
+    <div id="chatScreen">
+        <div class="header">24 House Intelligence</div>
+        <div id="messages"></div>
+        
+        <div id="inputArea">
+            <input type="text" id="userInput" placeholder="Digite seu nome...">
+            <button class="send-btn" onclick="sendName()">Enviar</button>
+        </div>
     </div>
-  </div>
-
-<div class="logo">
-  <span>House</span>
-</div>
-
-  <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
-
-</div>
-
-<!-- TELA 2 CHAT -->
-<div id="chatScreen">
-
-  <div class="header">
-    Plataforma Inteligente 24 House
-  </div>
-
-  <div id="messages"></div>
-
-</div>
-
 </div>
 
 <script>
+    let userName = "";
+    const whatsappNumber = "555186267502";
+    const driveLink = "https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6";
 
-let userName="";
-let selectedMonth="";
-let selectedDay="";
-
-const driveLink="https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6";
-const whatsappNumber="555186267502";
-
-function enterChat(){
-  document.getElementById("welcomeScreen").style.display="none";
-  document.getElementById("chatScreen").style.display="flex";
-
-  setTimeout(()=>{
-    botMessage("Olá tudo bem?\n\nQual é o seu primeiro nome?");
-  },300);
-}
-
-function botMessage(text){
-  const msg=document.createElement("div");
-  msg.className="msg bot";
-  msg.innerText=text;
-  document.getElementById("messages").appendChild(msg);
-  scrollDown();
-
-  if(text.includes("primeiro nome")){
-    setTimeout(()=>{
-      userName=prompt("Digite seu primeiro nome:");
-      if(userName){
-        userMessage(userName);
-        botMessage(`Olá, ${userName}. Seja bem vindo(a). Como posso te ajudar?`);
-        showMainOptions();
-      }
-    },400);
-  }
-}
-
-function userMessage(text){
-  const msg=document.createElement("div");
-  msg.className="msg user";
-  msg.innerText=text;
-  document.getElementById("messages").appendChild(msg);
-  scrollDown();
-}
-
-function showMainOptions(){
-  showOptions([
-    "Fotos do salão",
-    "Pacotes promocionais e valores",
-    "Agenda disponível",
-    "Falar com atendente humano"
-  ]);
-}
-
-function showOptions(options){
-  const container=document.createElement("div");
-  container.className="options";
-
-  options.forEach(opt=>{
-    const btn=document.createElement("button");
-    btn.innerText=opt;
-    btn.onclick=()=>{
-      userMessage(opt);
-      container.remove();
-      handleOption(opt);
-    };
-    container.appendChild(btn);
-  });
-
-  document.getElementById("messages").appendChild(container);
-  scrollDown();
-}
-
-function handleOption(option){
-
-  if(option==="Fotos do salão"){
-    botMessage(`Você pode visualizar todas as fotos do nosso espaço clicando no link abaixo:\n\n${driveLink}`);
-    showMainOptions();
-  }
-
-  if(option==="Pacotes promocionais e valores"){
-    botMessage(`Nosso foco é garantir boas lembranças do seu evento conosco.
-
-Pacote 1:
-8 horas de uso do ambiente + piscina + churrasqueira + espetos + carvão por R$799,00.
-
-Pacote 2:
-Tudo do pacote 1 + som profissional e DJ por R$990,00.`);
-    showMainOptions();
-  }
-
-  if(option==="Agenda disponível"){
-    showCalendarSelector();
-  }
-
-  if(option==="Falar com atendente humano"){
-    redirectWhatsApp("Olá, gostaria de falar com um atendente humano.");
-  }
-}
-
-function showCalendarSelector(){
-
-  botMessage(`${userName}, escolha o mês e o dia de 2026:`);
-
-  const container=document.createElement("div");
-  container.className="select-container";
-
-  const months=["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-
-  const daysInMonth={
-    "Janeiro":31,"Fevereiro":28,"Março":31,"Abril":30,"Maio":31,"Junho":30,
-    "Julho":31,"Agosto":31,"Setembro":30,"Outubro":31,"Novembro":30,"Dezembro":31
-  };
-
-  const monthBox=document.createElement("div");
-  monthBox.className="select-box";
-
-  const dayBox=document.createElement("div");
-  dayBox.className="select-box";
-
-  months.forEach(m=>{
-    const btn=document.createElement("button");
-    btn.innerText=m;
-    btn.onclick=()=>{
-      selectedMonth=m;
-      dayBox.innerHTML="";
-      for(let i=1;i<=daysInMonth[m];i++){
-        const dayBtn=document.createElement("button");
-        dayBtn.innerText=i;
-        dayBtn.onclick=()=>selectedDay=i;
-        dayBox.appendChild(dayBtn);
-      }
-    };
-    monthBox.appendChild(btn);
-  });
-
-  container.appendChild(monthBox);
-  container.appendChild(dayBox);
-  document.getElementById("messages").appendChild(container);
-
-  const verifyBtn=document.createElement("button");
-  verifyBtn.innerText="Verificar disponibilidade";
-  verifyBtn.className="primary-btn";
-  verifyBtn.onclick=()=>{
-    if(selectedMonth && selectedDay){
-      redirectWhatsApp(`Olá, gostaria de saber se a data ${selectedDay} de ${selectedMonth} de 2026 está disponível.`);
+    function enterChat() {
+        document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("chatScreen").style.display = "flex";
+        
+        setTimeout(() => {
+            addMessage("bot", "Olá! Seja bem-vindo à 24 House. 🌟");
+            setTimeout(() => {
+                addMessage("bot", "Para começarmos, qual é o seu primeiro nome?");
+                document.getElementById("inputArea").style.display = "flex";
+            }, 800);
+        }, 500);
     }
-  };
 
-  document.getElementById("messages").appendChild(verifyBtn);
-  scrollDown();
-}
+    function addMessage(type, text) {
+        const msg = document.createElement("div");
+        msg.className = `msg ${type}`;
+        msg.innerText = text;
+        document.getElementById("messages").appendChild(msg);
+        scrollDown();
+    }
 
-function redirectWhatsApp(message){
-  const url=`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-  window.open(url,"_blank");
-}
+    function sendName() {
+        const input = document.getElementById("userInput");
+        const name = input.value.trim();
+        
+        if (name !== "") {
+            userName = name;
+            addMessage("user", userName);
+            input.value = "";
+            document.getElementById("inputArea").style.display = "none";
+            
+            setTimeout(() => {
+                addMessage("bot", `Prazer em te conhecer, ${userName}! Como posso te ajudar hoje?`);
+                showMainOptions();
+            }, 800);
+        }
+    }
 
-function scrollDown(){
-  const messages=document.getElementById("messages");
-  messages.scrollTop=messages.scrollHeight;
-}
+    function showMainOptions() {
+        const options = [
+            "Fotos do salão",
+            "Pacotes e valores",
+            "Agenda 2026",
+            "Falar com Humano"
+        ];
+        
+        const container = document.createElement("div");
+        container.className = "options";
 
+        options.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.innerText = opt;
+            btn.onclick = () => {
+                addMessage("user", opt);
+                container.remove();
+                handleOption(opt);
+            };
+            container.appendChild(btn);
+        });
+
+        document.getElementById("messages").appendChild(container);
+        scrollDown();
+    }
+
+    function handleOption(option) {
+        if (option === "Fotos do salão") {
+            addMessage("bot", `Você pode conferir nosso espaço neste link: ${driveLink}`);
+            setTimeout(showMainOptions, 1500);
+        } else if (option === "Pacotes e valores") {
+            addMessage("bot", "Pacote 1: 8h de evento + Piscina + Churrasqueira por R$ 799.\n\nPacote 2: Tudo do P1 + DJ e Som Profissional por R$ 990.");
+            setTimeout(showMainOptions, 2000);
+        } else if (option === "Agenda 2026") {
+            addMessage("bot", "Ótima escolha! Por favor, me informe a data desejada para verificarmos.");
+            setTimeout(() => redirectWhatsApp(`Olá, sou o ${userName} e gostaria de ver a disponibilidade para 2026.`), 1000);
+        } else if (option === "Falar com Humano") {
+            redirectWhatsApp(`Olá, gostaria de falar com um atendente.`);
+        }
+    }
+
+    function redirectWhatsApp(msg) {
+        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+        window.open(url, "_blank");
+    }
+
+    function scrollDown() {
+        const m = document.getElementById("messages");
+        m.scrollTop = m.scrollHeight;
+    }
+
+    // Permitir enviar com "Enter"
+    document.getElementById("userInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendName();
+    });
 </script>
 
 </body>

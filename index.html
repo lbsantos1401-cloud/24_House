@@ -39,7 +39,7 @@ overflow:hidden;
 box-shadow:0 20px 60px rgba(0,0,0,0.7);
 }
 
-/* ===== WELCOME ===== */
+/* WELCOME */
 
 #welcomeScreen{
 flex:1;
@@ -55,7 +55,7 @@ font-size:120px;
 font-weight:800;
 color:white;
 letter-spacing:-6px;
-text-shadow:0 0 20px rgba(188,19,254,0.6);
+text-shadow:0 0 25px rgba(188,19,254,0.5);
 margin:0;
 }
 
@@ -78,7 +78,7 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* ===== CHAT ===== */
+/* CHAT */
 
 #chatScreen{
 display:none;
@@ -125,6 +125,8 @@ align-self:flex-end;
 border-bottom-right-radius:4px;
 }
 
+/* OPTIONS */
+
 .options{
 display:flex;
 flex-wrap:wrap;
@@ -133,14 +135,51 @@ margin-top:5px;
 }
 
 .options button{
-flex:1 1 30%;
-padding:8px;
+flex:1 1 45%;
+padding:10px;
 border-radius:8px;
 border:none;
 background:#333;
 color:white;
 cursor:pointer;
+}
+
+/* SCROLL WINDOW (MÊS / DIA) */
+
+.select-window{
+background:#18181c;
+border-radius:12px;
+padding:10px;
+max-height:160px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.select-item{
+padding:8px;
+border-radius:6px;
+background:#2a2a31;
+cursor:pointer;
 font-size:13px;
+}
+
+.select-item:hover{
+background:var(--primary);
+}
+
+/* VERIFY BUTTON */
+
+.verify-btn{
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:8px;
+background:var(--primary);
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
 
 .link-btn{
@@ -205,38 +244,21 @@ cursor:pointer;
 
 <script>
 
-/* ========================
-CONFIGURAÇÃO TEMPLATE JSON
-======================== */
-
 const CONFIG = {
 whatsappNumber:"555186267502",
 driveLink:"https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6",
 agenda:{
 2026:{
-"Janeiro":31,
-"Fevereiro":28,
-"Março":31,
-"Abril":30,
-"Maio":31,
-"Junho":30,
-"Julho":31,
-"Agosto":31,
-"Setembro":30,
-"Outubro":31,
-"Novembro":30,
-"Dezembro":31
+"Janeiro":31,"Fevereiro":28,"Março":31,"Abril":30,
+"Maio":31,"Junho":30,"Julho":31,"Agosto":31,
+"Setembro":30,"Outubro":31,"Novembro":30,"Dezembro":31
 }
 }
 };
 
-/* ======================== */
-
 let userName="";
 let selectedMonth="";
 let selectedDay="";
-
-/* ======================== */
 
 function enterChat(){
 welcomeScreen.style.display="none";
@@ -251,13 +273,8 @@ inputArea.style.display="flex";
 },500);
 }
 
-function bot(text){
-addMessage("bot",text);
-}
-
-function user(text){
-addMessage("user",text);
-}
+function bot(text){ addMessage("bot",text); }
+function user(text){ addMessage("user",text); }
 
 function addMessage(type,text){
 const div=document.createElement("div");
@@ -270,8 +287,6 @@ scroll();
 function scroll(){
 messages.scrollTop=messages.scrollHeight;
 }
-
-/* ======================== */
 
 function sendName(){
 const input=userInput.value.trim();
@@ -288,8 +303,6 @@ mainMenu();
 },600);
 }
 
-/* ======================== */
-
 function mainMenu(){
 showOptions([
 "Fotos do salão",
@@ -299,7 +312,7 @@ showOptions([
 ]);
 }
 
-function showOptions(list,type="menu"){
+function showOptions(list){
 const container=document.createElement("div");
 container.className="options";
 
@@ -309,24 +322,7 @@ btn.innerText=item;
 btn.onclick=()=>{
 user(item);
 container.remove();
-
-if(type==="month"){
-selectedMonth=item;
-bot(`Escolha o dia de ${selectedMonth}:`);
-showDays(selectedMonth);
-}
-else if(type==="day"){
-selectedDay=item;
-bot(`Verificando ${selectedDay} de ${selectedMonth}...`);
-setTimeout(()=>{
-redirectWhatsApp(
-`Olá! Gostaria de verificar a disponibilidade para ${selectedDay} de ${selectedMonth} de 2026.`
-);
-},800);
-}
-else{
 handleMenu(item);
-}
 };
 container.appendChild(btn);
 });
@@ -334,8 +330,6 @@ container.appendChild(btn);
 messages.appendChild(container);
 scroll();
 }
-
-/* ======================== */
 
 function handleMenu(option){
 
@@ -348,7 +342,7 @@ link.className="link-btn";
 link.innerText="Clique aqui para ver fotos";
 messages.appendChild(link);
 scroll();
-setTimeout(mainMenu,1200);
+setTimeout(mainMenu,1500);
 }
 
 if(option==="Pacotes e valores"){
@@ -357,11 +351,8 @@ setTimeout(mainMenu,1500);
 }
 
 if(option==="Agenda disponível"){
-bot("Para qual mês deseja verificar?");
-showOptions(
-Object.keys(CONFIG.agenda["2026"]),
-"month"
-);
+bot("Selecione o mês desejado:");
+showMonthWindow();
 }
 
 if(option==="Falar com humano"){
@@ -369,25 +360,68 @@ redirectWhatsApp("Olá, gostaria de falar com um atendente.");
 }
 }
 
-/* ======================== */
+/* ===== NOVO SISTEMA JANELA MÊS / DIA ===== */
 
-function showDays(month){
-const total=CONFIG.agenda["2026"][month];
-let days=[];
-for(let i=1;i<=total;i++){
-days.push(i.toString());
-}
-showOptions(days,"day");
+function showMonthWindow(){
+const container=document.createElement("div");
+container.className="select-window";
+
+Object.keys(CONFIG.agenda["2026"]).forEach(month=>{
+const item=document.createElement("div");
+item.className="select-item";
+item.innerText=month;
+item.onclick=()=>{
+selectedMonth=month;
+user(month);
+container.remove();
+bot(`Agora escolha o dia de ${month}:`);
+showDayWindow(month);
+};
+container.appendChild(item);
+});
+
+messages.appendChild(container);
+scroll();
 }
 
-/* ======================== */
+function showDayWindow(month){
+const container=document.createElement("div");
+container.className="select-window";
+
+for(let i=1;i<=CONFIG.agenda["2026"][month];i++){
+const item=document.createElement("div");
+item.className="select-item";
+item.innerText=i;
+item.onclick=()=>{
+selectedDay=i;
+user(i.toString());
+container.remove();
+showVerifyButton();
+};
+container.appendChild(item);
+}
+
+messages.appendChild(container);
+scroll();
+}
+
+function showVerifyButton(){
+const btn=document.createElement("button");
+btn.className="verify-btn";
+btn.innerText="Verificar data";
+btn.onclick=()=>{
+redirectWhatsApp(
+`Olá, me chamo ${userName} e gostaria de verificar disponibilidade na data ${selectedDay} de ${selectedMonth} de 2026.`
+);
+};
+messages.appendChild(btn);
+scroll();
+}
 
 function redirectWhatsApp(msg){
 const url=`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
 window.open(url,"_blank");
 }
-
-/* ======================== */
 
 userInput.addEventListener("keypress",e=>{
 if(e.key==="Enter")sendName();

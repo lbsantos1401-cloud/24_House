@@ -1,392 +1,341 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>24 House | Plataforma Inteligente</title>
-    <style>
-        :root {
-            --roxo-neon: #bc13fe;
-            --cinza-escuro: #1a1a1f;
-            --cinza-claro: #d8d8d8;
-            --preto-deep: #0e0e11;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>24 House | Plataforma Inteligente</title>
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #121214;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-            overflow: hidden;
-        }
+<style>
 
-        /* ===== APP CONTAINER ===== */
-        #app {
-            width: 100%;
-            max-width: 420px;
-            height: 90vh;
-            max-height: 800px;
-            background: #25252b;
-            border-radius: 30px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            border: 4px solid #333;
-        }
+/* BASE */
 
-        /* ===== TELA INICIAL ===== */
-        #welcomeScreen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: var(--cinza-escuro);
-            position: relative;
-            z-index: 1;
-        }
+body{
+  margin:0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background:#121214;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
 
-        /* SPEAKERS DE FUNDO */
-        .speakers {
-            display: flex;
-            justify-content: space-between;
-            width: 85%;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.3;
-            pointer-events: none;
-        }
+#app{
+  width:420px;
+  height:720px;
+  background:#1c1c21;
+  border-radius:22px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.8);
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
 
-        .speaker {
-            width: 55px;
-            height: 130px;
-            background: #111;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            padding: 10px 0;
-            border: 1px solid #333;
-        }
+/* ===== IMPACT SCREEN 2.0 ===== */
 
-        .woofer {
-            width: 35px;
-            height: 35px;
-            background: #222;
-            border-radius: 50%;
-            border: 2px solid var(--roxo-neon);
-            animation: pulse 1.5s infinite ease-in-out;
-        }
+#welcomeScreen{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:40px;
+  text-align:center;
+  padding:20px;
+  background:#18181c;
+}
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 10px var(--roxo-neon); }
-        }
+.logo-container{
+  user-select:none;
+}
 
-        /* LOGO ESTILIZADA */
-        .logo-container {
-            text-align: center;
-            z-index: 10;
-            margin-bottom: 50px;
-        }
+.logo-24{
+  font-size:120px;
+  font-weight:800;
+  color:#ffffff;
+  line-height:0.9;
+  letter-spacing:-5px;
+  margin:0;
+  text-shadow:
+    0 0 15px rgba(120,0,255,0.6),
+    0 0 40px rgba(120,0,255,0.3);
+}
 
-        .logo-24 {
-            font-size: 110px;
-            font-weight: 900;
-            color: var(--roxo-neon);
-            line-height: 0.8;
-            margin: 0;
-            text-shadow: 
-                -3px -3px 0 #000, 3px -3px 0 #000,
-                -3px 3px 0 #000, 3px 3px 0 #000,
-                0 0 25px rgba(188, 19, 254, 0.7);
-        }
+.logo-house{
+  font-size:24px;
+  font-weight:300;
+  color:#a1a1a1;
+  text-transform:uppercase;
+  letter-spacing:12px;
+  margin-top:-10px;
+  margin-left:12px;
+}
 
-        .logo-house {
-            font-size: 38px;
-            font-weight: 700;
-            color: var(--cinza-claro);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
+.start-btn{
+  padding:14px 40px;
+  border:none;
+  border-radius:30px;
+  background:#7c3aed;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  font-size:15px;
+  transition:0.3s;
+}
 
-        .start-btn {
-            padding: 16px 40px;
-            border: none;
-            border-radius: 50px;
-            background: var(--roxo-neon);
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.4);
-            z-index: 10;
-        }
+.start-btn:hover{
+  background:#9f67ff;
+  transform:scale(1.05);
+}
 
-        .start-btn:hover {
-            transform: scale(1.05);
-            background: #a312db;
-        }
+/* ===== CHAT ===== */
 
-        /* ===== TELA DE CHAT ===== */
-        #chatScreen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            background: #1c1c21;
-        }
+#chatScreen{
+  display:none;
+  flex:1;
+  flex-direction:column;
+}
 
-        .header {
-            padding: 20px;
-            text-align: center;
-            background: var(--preto-deep);
-            border-bottom: 1px solid #333;
-            font-weight: bold;
-            color: var(--roxo-neon);
-        }
+.header{
+  padding:16px;
+  text-align:center;
+  border-bottom:1px solid #2a2a30;
+  font-weight:600;
+  background:#1c1c21;
+  position:sticky;
+  top:0;
+  z-index:10;
+  color:#9f67ff;
+}
 
-        #messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+#messages{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
 
-        .msg {
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 85%;
-            font-size: 15px;
-            line-height: 1.5;
-        }
+.msg{
+  padding:14px 18px;
+  border-radius:18px;
+  margin-bottom:14px;
+  max-width:80%;
+  line-height:1.5;
+  font-size:14px;
+}
 
-        .bot {
-            background: #2d2d35;
-            color: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
+/* BOT CINZA PREMIUM */
+.bot{
+  background:#e9e9eb;
+  color:#1a1a1f;
+  border-radius:18px 18px 18px 6px;
+}
 
-        .user {
-            background: var(--roxo-neon);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
+/* USER ESCURO */
+.user{
+  background:#25252b;
+  color:white;
+  border-radius:18px 18px 6px 18px;
+  align-self:flex-end;
+}
 
-        /* ÁREA DE INPUT */
-        #inputArea {
-            padding: 15px;
-            background: var(--preto-deep);
-            display: none;
-            gap: 10px;
-        }
+/* OPTIONS */
 
-        #userInput {
-            flex: 1;
-            padding: 12px;
-            border-radius: 25px;
-            border: 1px solid #444;
-            background: #25252b;
-            color: white;
-            outline: none;
-        }
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:10px;
+}
 
-        .send-btn {
-            background: var(--roxo-neon);
-            border: none;
-            color: white;
-            padding: 0 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+.options button{
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  background:#7c3aed;
+  color:white;
+  font-weight:600;
+  transition:0.2s;
+}
 
-        /* OPÇÕES */
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 5px;
-        }
+.options button:hover{
+  background:#9f67ff;
+}
 
-        .options button {
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--roxo-neon);
-            background: rgba(188, 19, 254, 0.1);
-            color: white;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.2s;
-        }
+/* LINK BUTTON */
 
-        .options button:hover {
-            background: var(--roxo-neon);
-        }
+.link-btn{
+  display:block;
+  text-align:center;
+  padding:12px;
+  border-radius:12px;
+  background:#7c3aed;
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+  margin:10px 0;
+  transition:0.2s;
+}
 
-        .select-box {
-            display: flex;
-            gap: 5px;
-            height: 120px;
-            overflow-y: auto;
-            background: #111;
-            padding: 10px;
-            border-radius: 10px;
-        }
+.link-btn:hover{
+  background:#9f67ff;
+}
 
-        .select-box button {
-            display: block;
-            width: 100%;
-            margin-bottom: 4px;
-            padding: 8px;
-            background: #333;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+</style>
 </head>
+
 <body>
 
 <div id="app">
-    <div id="welcomeScreen">
-        <div class="speakers">
-            <div class="speaker"><div class="woofer"></div><div class="woofer"></div></div>
-            <div class="speaker"><div class="woofer"></div><div class="woofer"></div></div>
-        </div>
 
-        <div class="logo-container">
-            <h1 class="logo-24">24</h1>
-            <h2 class="logo-house">House</h2>
-        </div>
+<!-- IMPACT SCREEN -->
+<div id="welcomeScreen">
 
-        <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
-    </div>
+  <div class="logo-container">
+    <h1 class="logo-24">24</h1>
+    <div class="logo-house">House</div>
+  </div>
 
-    <div id="chatScreen">
-        <div class="header">24 House Intelligence</div>
-        <div id="messages"></div>
-        
-        <div id="inputArea">
-            <input type="text" id="userInput" placeholder="Digite seu nome...">
-            <button class="send-btn" onclick="sendName()">Enviar</button>
-        </div>
-    </div>
+  <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
+
+</div>
+
+<!-- CHAT -->
+<div id="chatScreen">
+
+  <div class="header">
+    Plataforma Inteligente 24 House
+  </div>
+
+  <div id="messages"></div>
+
+</div>
+
 </div>
 
 <script>
-    let userName = "";
-    const whatsappNumber = "555186267502";
-    const driveLink = "https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6";
 
-    function enterChat() {
-        document.getElementById("welcomeScreen").style.display = "none";
-        document.getElementById("chatScreen").style.display = "flex";
-        
-        setTimeout(() => {
-            addMessage("bot", "Olá! Seja bem-vindo à 24 House. 🌟");
-            setTimeout(() => {
-                addMessage("bot", "Para começarmos, qual é o seu primeiro nome?");
-                document.getElementById("inputArea").style.display = "flex";
-            }, 800);
-        }, 500);
-    }
+let userName="";
+const driveLink="https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6";
+const whatsappNumber="555186267502";
 
-    function addMessage(type, text) {
-        const msg = document.createElement("div");
-        msg.className = `msg ${type}`;
-        msg.innerText = text;
-        document.getElementById("messages").appendChild(msg);
-        scrollDown();
-    }
+function enterChat(){
+  document.getElementById("welcomeScreen").style.display="none";
+  document.getElementById("chatScreen").style.display="flex";
 
-    function sendName() {
-        const input = document.getElementById("userInput");
-        const name = input.value.trim();
-        
-        if (name !== "") {
-            userName = name;
-            addMessage("user", userName);
-            input.value = "";
-            document.getElementById("inputArea").style.display = "none";
-            
-            setTimeout(() => {
-                addMessage("bot", `Prazer em te conhecer, ${userName}! Como posso te ajudar hoje?`);
-                showMainOptions();
-            }, 800);
-        }
-    }
+  setTimeout(()=>{
+    botMessage("Olá, tudo bem?\n\nQual é o seu primeiro nome?");
+  },300);
+}
 
-    function showMainOptions() {
-        const options = [
-            "Fotos do salão",
-            "Pacotes e valores",
-            "Agenda 2026",
-            "Falar com Humano"
-        ];
-        
-        const container = document.createElement("div");
-        container.className = "options";
+function botMessage(text){
+  const msg=document.createElement("div");
+  msg.className="msg bot";
+  msg.innerText=text;
+  document.getElementById("messages").appendChild(msg);
+  scrollDown();
 
-        options.forEach(opt => {
-            const btn = document.createElement("button");
-            btn.innerText = opt;
-            btn.onclick = () => {
-                addMessage("user", opt);
-                container.remove();
-                handleOption(opt);
-            };
-            container.appendChild(btn);
-        });
+  if(text.includes("primeiro nome")){
+    setTimeout(()=>{
+      userName=prompt("Digite seu primeiro nome:");
+      if(userName){
+        userMessage(userName);
+        botMessage(`Prazer, ${userName}. Como posso te ajudar hoje?`);
+        showMainOptions();
+      }
+    },400);
+  }
+}
 
-        document.getElementById("messages").appendChild(container);
-        scrollDown();
-    }
+function userMessage(text){
+  const msg=document.createElement("div");
+  msg.className="msg user";
+  msg.innerText=text;
+  document.getElementById("messages").appendChild(msg);
+  scrollDown();
+}
 
-    function handleOption(option) {
-        if (option === "Fotos do salão") {
-            addMessage("bot", `Você pode conferir nosso espaço neste link: ${driveLink}`);
-            setTimeout(showMainOptions, 1500);
-        } else if (option === "Pacotes e valores") {
-            addMessage("bot", "Pacote 1: 8h de evento + Piscina + Churrasqueira por R$ 799.\n\nPacote 2: Tudo do P1 + DJ e Som Profissional por R$ 990.");
-            setTimeout(showMainOptions, 2000);
-        } else if (option === "Agenda 2026") {
-            addMessage("bot", "Ótima escolha! Por favor, me informe a data desejada para verificarmos.");
-            setTimeout(() => redirectWhatsApp(`Olá, sou o ${userName} e gostaria de ver a disponibilidade para 2026.`), 1000);
-        } else if (option === "Falar com Humano") {
-            redirectWhatsApp(`Olá, gostaria de falar com um atendente.`);
-        }
-    }
+function showMainOptions(){
+  showOptions([
+    "Fotos do salão",
+    "Pacotes promocionais e valores",
+    "Agenda disponível",
+    "Falar com atendente humano"
+  ]);
+}
 
-    function redirectWhatsApp(msg) {
-        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-        window.open(url, "_blank");
-    }
+function showOptions(options){
+  const container=document.createElement("div");
+  container.className="options";
 
-    function scrollDown() {
-        const m = document.getElementById("messages");
-        m.scrollTop = m.scrollHeight;
-    }
+  options.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.innerText=opt;
+    btn.onclick=()=>{
+      userMessage(opt);
+      container.remove();
+      handleOption(opt);
+    };
+    container.appendChild(btn);
+  });
 
-    // Permitir enviar com "Enter"
-    document.getElementById("userInput").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendName();
-    });
+  document.getElementById("messages").appendChild(container);
+  scrollDown();
+}
+
+function handleOption(option){
+
+  if(option==="Fotos do salão"){
+    botMessage(`Perfeito, ${userName}. Veja nossa galeria exclusiva:`);
+
+    const link=document.createElement("a");
+    link.href=driveLink;
+    link.target="_blank";
+    link.className="link-btn";
+    link.innerText="📸 Clique aqui para ver fotos do salão";
+
+    document.getElementById("messages").appendChild(link);
+    scrollDown();
+
+    setTimeout(()=>{
+      botMessage("O que mais você deseja saber?");
+      showMainOptions();
+    },1500);
+  }
+
+  if(option==="Pacotes promocionais e valores"){
+    botMessage(`Pacote 1:
+8h de evento + piscina + churrasqueira + espetos + carvão
+R$ 799,00
+
+Pacote 2:
+Tudo do pacote 1 + som profissional e DJ
+R$ 990,00`);
+    showMainOptions();
+  }
+
+  if(option==="Agenda disponível"){
+    redirectWhatsApp("Olá, gostaria de verificar disponibilidade de data.");
+  }
+
+  if(option==="Falar com atendente humano"){
+    redirectWhatsApp("Olá, gostaria de falar com um atendente.");
+  }
+}
+
+function redirectWhatsApp(message){
+  const url=`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url,"_blank");
+}
+
+function scrollDown(){
+  const messages=document.getElementById("messages");
+  messages.scrollTop=messages.scrollHeight;
+}
+
 </script>
 
 </body>

@@ -32,7 +32,7 @@ body{
   flex-direction:column;
 }
 
-/* ===== PRIMEIRA TELA ===== */
+/* ===== PRIMEIRA TELA REFINADA ===== */
 
 #welcomeScreen{
   flex:1;
@@ -40,21 +40,45 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  gap:30px;
+  gap:40px;
   text-align:center;
-  padding:20px;
+  background:#1a1a1f; /* cinza escuro */
+  position:relative;
 }
 
 .logo{
-  font-size:64px;
-  font-weight:900;
-  color:#b026ff;
-  text-shadow:0 0 20px #b026ff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  line-height:1;
 }
 
-.logo span{
+/* 24 */
+.logo::before{
+  content:"24";
+  font-size:110px;
+  font-weight:900;
+  color:#6f00ff; /* roxo escuro */
+  text-shadow:
+    -3px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000,
+     0 0 25px rgba(111,0,255,0.9);
   display:block;
-  font-size:34px;
+}
+
+/* House */
+.logo span{
+  font-size:42px;
+  font-weight:700;
+  color:#d8d8d8; /* cinza claro */
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000,
+     0 0 12px rgba(255,255,255,0.5);
   margin-top:-15px;
 }
 
@@ -227,10 +251,9 @@ body{
     </div>
   </div>
 
-  <div class="logo">
-    24
-    <span>House</span>
-  </div>
+<div class="logo">
+  <span>House</span>
+</div>
 
   <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
 

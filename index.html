@@ -23,14 +23,14 @@ background:var(--bg-dark);
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+height:100dvh;
 color:white;
 }
 
 #app{
 width:100%;
 max-width:420px;
-height:90vh;
+height:90dvh;
 background:#25252b;
 border-radius:28px;
 display:flex;
@@ -39,6 +39,7 @@ overflow:hidden;
 box-shadow:0 20px 60px rgba(0,0,0,0.7);
 }
 
+/* WELCOME */
 #welcomeScreen{
 flex:1;
 display:flex;
@@ -74,10 +75,12 @@ font-weight:bold;
 cursor:pointer;
 }
 
+/* CHAT */
 #chatScreen{
 display:none;
 flex-direction:column;
 flex:1;
+min-height:0; /* 🔑 permite scroll correto */
 background:var(--card);
 }
 
@@ -87,15 +90,18 @@ background:#0e0e11;
 text-align:center;
 font-weight:bold;
 color:var(--primary);
+flex-shrink:0;
 }
 
 #messages{
 flex:1;
+min-height:0;              /* 🔑 essencial */
 padding:20px;
 overflow-y:auto;
 display:flex;
 flex-direction:column;
 gap:12px;
+scroll-behavior:smooth;
 }
 
 .msg{
@@ -119,11 +125,15 @@ align-self:flex-end;
 border-bottom-right-radius:4px;
 }
 
+/* INPUT FIXO */
 #inputArea{
 display:flex;
 padding:10px;
 background:#0e0e11;
 gap:6px;
+position:sticky;
+bottom:0;
+flex-shrink:0;
 }
 
 #userInput{
@@ -170,7 +180,6 @@ cursor:pointer;
 <script>
 // ================= CONFIG =================
 const CONFIG = {
-  whatsappNumber:"555186267502",
   driveLink:"https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6"
 };
 
@@ -183,53 +192,32 @@ const STATE = {
 // ================= BASE SEMÂNTICA =================
 const BASE_SEMANTICA = [
   {
-    intent: "PACOTES",
-    palavras: ["preço","valor","valores","custo","pacote","quanto custa","orçamento","799","10 reais","hora extra"],
-    resposta: () => {
-      bot("O valor é R$799,99 para até 60 pessoas. Acima disso, é cobrado R$10 por pessoa. Hora extra custa R$115. Datas especiais possuem valores diferentes.");
-    }
+    palavras:["preço","valor","valores","custo","pacote","quanto custa","orçamento","799","10 reais","hora extra"],
+    resposta:()=>bot("O valor é R$799,99 para até 60 pessoas. Acima disso, R$10 por pessoa. Hora extra custa R$115. Datas especiais têm valores diferentes.")
   },
   {
-    intent: "PAGAMENTO",
-    palavras: ["pagamento","sinal","50%","entrada","desistência","cancelamento","trocar data"],
-    resposta: () => {
-      bot("A reserva é feita mediante sinal de 50%. Em caso de desistência, o sinal não é reembolsado. Troca de data ou horário somente com 3 dias de antecedência.");
-    }
+    palavras:["pagamento","sinal","50%","entrada","desistência","cancelamento","trocar data"],
+    resposta:()=>bot("A reserva é feita com sinal de 50%. Em caso de desistência, o valor não é devolvido. Troca de data apenas com 3 dias de antecedência.")
   },
   {
-    intent: "CAPACIDADE",
-    palavras: ["quantas pessoas","capacidade","lotação","300","60 pessoas"],
-    resposta: () => {
-      bot("O espaço comporta até 300 pessoas. O pacote base cobre até 60 convidados.");
-    }
+    palavras:["quantas pessoas","capacidade","lotação","300","60 pessoas"],
+    resposta:()=>bot("O espaço comporta até 300 pessoas. O pacote base cobre até 60 convidados.")
   },
   {
-    intent: "HORARIOS",
-    palavras: ["horário","noite","dia","8 horas","21","5 da manhã"],
-    resposta: () => {
-      bot("O horário noturno é das 21h até 5h da manhã, totalizando 8 horas. Eventos diurnos são combinados.");
-    }
+    palavras:["horário","noite","dia","8 horas","21","5 da manhã"],
+    resposta:()=>bot("O horário noturno é das 21h às 5h da manhã (8 horas). Eventos diurnos são a combinar.")
   },
   {
-    intent: "ESTRUTURA",
-    palavras: ["piscina","banheiro","wifi","churrasqueira","som","luzes","estacionamento"],
-    resposta: () => {
-      bot("O espaço possui piscina, Wi-Fi, som ambiente, luzes LED, churrasqueira, banheiros masculino e feminino e estacionamento privado.");
-    }
+    palavras:["piscina","banheiro","wifi","churrasqueira","som","luzes","estacionamento"],
+    resposta:()=>bot("O espaço possui piscina, Wi-Fi, som ambiente, luzes LED, churrasqueira, banheiros e estacionamento privado.")
   },
   {
-    intent: "REGRAS",
-    palavras: ["regras","responsável","estragos","utensílios","prato","talheres","limpeza"],
-    resposta: () => {
-      bot("A limpeza é por nossa conta. O locador é responsável por estragos. Não fornecemos utensílios como pratos ou talheres.");
-    }
+    palavras:["regras","responsável","estragos","utensílios","prato","talheres","limpeza"],
+    resposta:()=>bot("A limpeza é por nossa conta. O locador é responsável por estragos. Não fornecemos utensílios.")
   },
   {
-    intent: "LOCALIZACAO",
-    palavras: ["onde fica","localização","endereço","alvorada"],
-    resposta: () => {
-      bot("O espaço fica localizado em Alvorada.");
-    }
+    palavras:["onde fica","localização","endereço","alvorada"],
+    resposta:()=>bot("O espaço fica localizado em Alvorada.")
   }
 ];
 
@@ -252,21 +240,15 @@ function addMessage(type,text){
   messages.scrollTop=messages.scrollHeight;
 }
 
-// ================= DECODER SEMÂNTICO =================
+// ================= DECODER =================
 function decodeIntent(text){
-  const t = text.toLowerCase();
-  let melhor = null;
-  let maiorScore = 0;
+  const t=text.toLowerCase();
+  let melhor=null, maior=0;
 
-  BASE_SEMANTICA.forEach(bloco=>{
-    let score = 0;
-    bloco.palavras.forEach(p=>{
-      if(t.includes(p)) score++;
-    });
-    if(score > maiorScore){
-      maiorScore = score;
-      melhor = bloco;
-    }
+  BASE_SEMANTICA.forEach(b=>{
+    let score=0;
+    b.palavras.forEach(p=>{ if(t.includes(p)) score++; });
+    if(score>maior){ maior=score; melhor=b; }
   });
 
   return melhor;
@@ -274,26 +256,21 @@ function decodeIntent(text){
 
 // ================= INPUT =================
 function sendMessage(){
-  const input = userInput.value.trim();
+  const input=userInput.value.trim();
   if(!input) return;
 
   user(input);
   userInput.value="";
 
   if(!STATE.initialized){
-    STATE.userName = input;
-    STATE.initialized = true;
-    bot(`Prazer, ${STATE.userName}. Pode me perguntar qualquer coisa sobre o espaço 😊`);
+    STATE.userName=input;
+    STATE.initialized=true;
+    bot(`Prazer, ${STATE.userName}. Pode perguntar à vontade 😊`);
     return;
   }
 
-  const bloco = decodeIntent(input);
-
-  if(bloco){
-    bloco.resposta();
-  }else{
-    bot("Não entendi completamente 🤔 Você pode perguntar sobre valores, horários, estrutura ou localização.");
-  }
+  const bloco=decodeIntent(input);
+  bloco ? bloco.resposta() : bot("Não entendi completamente. Pode perguntar sobre valores, horários, regras ou estrutura.");
 }
 
 userInput.addEventListener("keypress",e=>{

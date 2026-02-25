@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>24 House | Agente Cognitivo</title>
 
 <style>
@@ -20,22 +20,23 @@ body{
 margin:0;
 font-family:'Segoe UI',sans-serif;
 background:var(--bg-dark);
-height:100dvh;
 display:flex;
 justify-content:center;
 align-items:center;
+height:100vh;
 color:white;
 }
 
 #app{
 width:100%;
 max-width:420px;
-height:100%;
+height:90vh;
 background:#25252b;
-border-radius:0;
+border-radius:28px;
 display:flex;
 flex-direction:column;
 overflow:hidden;
+box-shadow:0 20px 60px rgba(0,0,0,0.7);
 }
 
 #welcomeScreen{
@@ -49,7 +50,6 @@ background:#1a1a1f;
 
 .logo-24{font-size:120px;font-weight:800;}
 .logo-house{letter-spacing:8px;color:#aaa;margin-top:-20px;}
-
 .start-btn{
 margin-top:30px;
 padding:14px 40px;
@@ -83,15 +83,14 @@ overflow-y:auto;
 display:flex;
 flex-direction:column;
 gap:10px;
-scroll-behavior:smooth;
 }
 
 .msg{
 padding:10px 14px;
 border-radius:16px;
-max-width:80%;
+max-width:85%;
 font-size:14px;
-word-wrap:break-word;
+white-space:pre-wrap;
 }
 
 .bot{background:var(--text-light);color:var(--text-dark);align-self:flex-start;}
@@ -102,8 +101,6 @@ display:flex;
 padding:10px;
 background:#0e0e11;
 gap:6px;
-position:sticky;
-bottom:0;
 }
 
 #userInput{
@@ -148,78 +145,89 @@ cursor:pointer;
 </div>
 
 <script>
-/* ================= CONFIG ================= */
+/* ===================== CONFIG ===================== */
 
-const CONFIG={
+const CONFIG = {
 whatsapp:"555186267502",
 learningKey:"24house_learning"
 };
 
-/* ================= ESTADO COGNITIVO ================= */
+/* ===================== LEARNING STORE ===================== */
 
-let lastAskedClarification=false;
+const LearningStore = {
+data: JSON.parse(localStorage.getItem(CONFIG.learningKey)) || {
+responses:{},
+unanswered:[]
+},
 
-/* ================= LEARNING ================= */
+save(){
+localStorage.setItem(CONFIG.learningKey,JSON.stringify(this.data));
+},
 
-const LearningStore={
-data:JSON.parse(localStorage.getItem(CONFIG.learningKey))||{responses:{},unanswered:[]},
-save(){localStorage.setItem(CONFIG.learningKey,JSON.stringify(this.data));},
-reward(k,v){this.data.responses[k]=(this.data.responses[k]||0)+v;this.save();},
-logUnanswered(t){this.data.unanswered.push({t,ts:Date.now()});this.save();},
-getBias(k){return this.data.responses[k]||0;}
+reward(key,value){
+this.data.responses[key]=(this.data.responses[key]||0)+value;
+this.save();
+},
+
+logUnanswered(text){
+this.data.unanswered.push({text,ts:Date.now()});
+this.save();
+},
+
+getBias(key){
+return this.data.responses[key]||0;
+}
 };
 
-/* ================= BASE SEMÂNTICA ================= */
+/* ===================== BASE SEMÂNTICA ===================== */
 
-const BASE=[
+const BASE = [
 {
 intent:"PACOTES",
-direct:true,
-keywords:["preço","valor","custo","quanto","aluguel"],
+keywords:["preço","valor","custo","pacote","orçamento","quanto"],
 responses:[
-{ id:"pacote", text:"O valor do aluguel é R$799,99 para até 60 pessoas. Acima disso, é cobrado R$10 por pessoa adicional. Datas especiais têm valores diferentes." }
+{ id:"pacotes_curto", text:"O valor é R$799,99 para até 60 pessoas. Passou disso, é R$10 por pessoa." },
+{ id:"pacotes_detalhado", text:"O pacote base custa R$799,99 para até 60 pessoas. Acima disso, é cobrado R$10 por pessoa adicional. Datas especiais têm valores diferentes." }
 ]
 },
 {
 intent:"ESTRUTURA",
-direct:true,
-keywords:["espaço","estrutura","piscina","banheiro","som","wifi"],
+keywords:["banheiro","piscina","som","wifi","estrutura","espaço"],
 responses:[
-{ id:"estrutura", text:"O espaço comporta até 300 pessoas, possui piscina liberada, som ambiente, luzes, Wi-Fi e dois banheiros." }
+{ id:"estrutura", text:"Nosso espaço comporta até 300 pessoas, tem piscina liberada, som ambiente, luzes, Wi-Fi e dois banheiros." }
 ]
 },
 {
 intent:"AGENDA",
-direct:true,
 keywords:["agendar","agenda","reservar","data"],
 responses:[
-{ id:"agenda", text:"Para agendar uma data, é só falar com nosso atendimento no WhatsApp 😊" }
+{ id:"agenda", text:"Para agendar uma data, te encaminho para nosso atendimento no WhatsApp 😊" }
 ]
 }
 ];
 
-/* ================= DECODER ================= */
+/* ===================== DECODER ===================== */
 
 function decode(text){
-text=text.toLowerCase();
-let best=null;
-
-BASE.forEach(b=>{
+let scores=[];
+BASE.forEach(block=>{
 let score=0;
-b.keywords.forEach(k=>{
+block.keywords.forEach(k=>{
 if(text.includes(k)) score++;
 });
-if(score>0 && (!best || score>best.score)){
-best={block:b,score};
-}
+if(score>0) scores.push({block,score});
 });
-return best;
+scores.sort((a,b)=>b.score-a.score);
+return scores[0]||null;
 }
 
-/* ================= UI ================= */
+/* ===================== UI ===================== */
 
 const messages=document.getElementById("messages");
 const input=document.getElementById("userInput");
+
+function bot(t){add("bot",t);}
+function user(t){add("user",t);}
 
 function add(type,text){
 const d=document.createElement("div");
@@ -229,10 +237,34 @@ messages.appendChild(d);
 messages.scrollTop=messages.scrollHeight;
 }
 
-function bot(t){add("bot",t);}
-function user(t){add("user",t);}
+/* ===================== DEBUG ===================== */
 
-/* ================= FLOW ================= */
+function showDebug(){
+const data = LearningStore.data;
+let output = "🧠 MODO DEBUG ATIVO\n\n";
+
+output += "📈 Respostas reforçadas:\n";
+for(const k in data.responses){
+output += `- ${k}: ${data.responses[k]}\n`;
+}
+
+if(Object.keys(data.responses).length===0){
+output += "- (nenhuma ainda)\n";
+}
+
+output += "\n❓ Perguntas não respondidas:\n";
+if(data.unanswered.length===0){
+output += "- (nenhuma)\n";
+}else{
+data.unanswered.slice(-5).forEach(u=>{
+output += `- ${u.text}\n`;
+});
+}
+
+bot(output);
+}
+
+/* ===================== FLUXO ===================== */
 
 function enterChat(){
 welcomeScreen.style.display="none";
@@ -241,43 +273,58 @@ bot("Olá! Como posso te ajudar hoje?");
 }
 
 function handleUser(){
-const text=input.value.trim();
-if(!text) return;
-user(text);
+const raw=input.value.trim();
+if(!raw)return;
+user(raw);
 input.value="";
-process(text);
+
+if(raw.toLowerCase()==="#debug"){
+showDebug();
+return;
+}
+
+process(raw.toLowerCase());
 }
 
 function process(text){
 const decoded=decode(text);
 
-if(!decoded){
+if(!decoded || decoded.score<2){
 LearningStore.logUnanswered(text);
-safeClarification();
+askClarification();
 return;
 }
 
 const block=decoded.block;
-const response=block.responses[0];
+let best=null;
+let bestScore=-Infinity;
 
-bot(response.text);
-LearningStore.reward(response.id,1);
-lastAskedClarification=false;
+block.responses.forEach(r=>{
+const bias=LearningStore.getBias(r.id);
+if(bias>bestScore){
+bestScore=bias;
+best=r;
+}
+});
+
+bot(best.text);
+LearningStore.reward(best.id,1);
 
 if(block.intent==="AGENDA"){
-setTimeout(()=>window.open(`https://wa.me/${CONFIG.whatsapp}`,"_blank"),1200);
+setTimeout(()=>{
+window.open(`https://wa.me/${CONFIG.whatsapp}`,"_blank");
+LearningStore.reward(best.id,5);
+},1200);
 }
 }
 
-function safeClarification(){
-if(lastAskedClarification) return;
-lastAskedClarification=true;
-bot("Você quer saber sobre preço, estrutura ou agendamento?");
+function askClarification(){
+bot("Pode me explicar melhor? É sobre valores, agenda ou estrutura?");
 }
 
-/* ================= EVENTS ================= */
+/* ===================== EVENTS ===================== */
 
-input.addEventListener("keydown",e=>{
+input.addEventListener("keypress",e=>{
 if(e.key==="Enter") handleUser();
 });
 </script>

@@ -174,21 +174,71 @@ const CONFIG = {
   driveLink:"https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6"
 };
 
-// ================= ESTADO COGNITIVO =================
+// ================= ESTADO =================
 const STATE = {
   userName: null,
   initialized: false
 };
 
-// ================= UI CORE =================
+// ================= BASE SEMÂNTICA =================
+const BASE_SEMANTICA = [
+  {
+    intent: "PACOTES",
+    palavras: ["preço","valor","valores","custo","pacote","quanto custa","orçamento","799","10 reais","hora extra"],
+    resposta: () => {
+      bot("O valor é R$799,99 para até 60 pessoas. Acima disso, é cobrado R$10 por pessoa. Hora extra custa R$115. Datas especiais possuem valores diferentes.");
+    }
+  },
+  {
+    intent: "PAGAMENTO",
+    palavras: ["pagamento","sinal","50%","entrada","desistência","cancelamento","trocar data"],
+    resposta: () => {
+      bot("A reserva é feita mediante sinal de 50%. Em caso de desistência, o sinal não é reembolsado. Troca de data ou horário somente com 3 dias de antecedência.");
+    }
+  },
+  {
+    intent: "CAPACIDADE",
+    palavras: ["quantas pessoas","capacidade","lotação","300","60 pessoas"],
+    resposta: () => {
+      bot("O espaço comporta até 300 pessoas. O pacote base cobre até 60 convidados.");
+    }
+  },
+  {
+    intent: "HORARIOS",
+    palavras: ["horário","noite","dia","8 horas","21","5 da manhã"],
+    resposta: () => {
+      bot("O horário noturno é das 21h até 5h da manhã, totalizando 8 horas. Eventos diurnos são combinados.");
+    }
+  },
+  {
+    intent: "ESTRUTURA",
+    palavras: ["piscina","banheiro","wifi","churrasqueira","som","luzes","estacionamento"],
+    resposta: () => {
+      bot("O espaço possui piscina, Wi-Fi, som ambiente, luzes LED, churrasqueira, banheiros masculino e feminino e estacionamento privado.");
+    }
+  },
+  {
+    intent: "REGRAS",
+    palavras: ["regras","responsável","estragos","utensílios","prato","talheres","limpeza"],
+    resposta: () => {
+      bot("A limpeza é por nossa conta. O locador é responsável por estragos. Não fornecemos utensílios como pratos ou talheres.");
+    }
+  },
+  {
+    intent: "LOCALIZACAO",
+    palavras: ["onde fica","localização","endereço","alvorada"],
+    resposta: () => {
+      bot("O espaço fica localizado em Alvorada.");
+    }
+  }
+];
+
+// ================= UI =================
 function enterChat(){
   welcomeScreen.style.display="none";
   chatScreen.style.display="flex";
-
-  setTimeout(()=>{
-    bot("Olá! Seja bem-vindo à 24 House.");
-    bot("Antes de tudo, qual é o seu nome?");
-  },500);
+  bot("Olá! Seja bem-vindo à 24 House.");
+  bot("Antes de começarmos, qual é o seu nome?");
 }
 
 function bot(text){ addMessage("bot",text); }
@@ -202,64 +252,24 @@ function addMessage(type,text){
   messages.scrollTop=messages.scrollHeight;
 }
 
-// ================= DECODER =================
+// ================= DECODER SEMÂNTICO =================
 function decodeIntent(text){
   const t = text.toLowerCase();
+  let melhor = null;
+  let maiorScore = 0;
 
-  if(!STATE.initialized){
-    return "NAME";
-  }
+  BASE_SEMANTICA.forEach(bloco=>{
+    let score = 0;
+    bloco.palavras.forEach(p=>{
+      if(t.includes(p)) score++;
+    });
+    if(score > maiorScore){
+      maiorScore = score;
+      melhor = bloco;
+    }
+  });
 
-  if(t.includes("foto") || t.includes("imagem") || t.includes("galeria")){
-    return "FOTOS";
-  }
-
-  if(t.includes("preço") || t.includes("valor") || t.includes("pacote")){
-    return "PACOTES";
-  }
-
-  if(t.includes("agenda") || t.includes("data") || t.includes("marcar")){
-    return "AGENDA";
-  }
-
-  if(t.includes("humano") || t.includes("atendente")){
-    return "HUMANO";
-  }
-
-  return "UNKNOWN";
-}
-
-// ================= DECISÃO =================
-function handleIntent(intent, text){
-  switch(intent){
-
-    case "NAME":
-      STATE.userName = text;
-      STATE.initialized = true;
-      bot(`Prazer, ${STATE.userName}. Pode me dizer como posso ajudar?`);
-      break;
-
-    case "FOTOS":
-      bot("Aqui está nossa galeria:");
-      window.open(CONFIG.driveLink,"_blank");
-      break;
-
-    case "PACOTES":
-      bot("Temos pacotes a partir de R$799. Se quiser, posso detalhar 😊");
-      break;
-
-    case "AGENDA":
-      bot("Para verificar agenda, posso te encaminhar direto para um atendente.");
-      redirectWhatsApp(`Olá, me chamo ${STATE.userName} e gostaria de verificar disponibilidade.`);
-      break;
-
-    case "HUMANO":
-      redirectWhatsApp(`Olá, me chamo ${STATE.userName} e gostaria de falar com um atendente.`);
-      break;
-
-    default:
-      bot("Não entendi totalmente 🤔 Você pode perguntar sobre fotos, valores ou agenda.");
-  }
+  return melhor;
 }
 
 // ================= INPUT =================
@@ -270,19 +280,25 @@ function sendMessage(){
   user(input);
   userInput.value="";
 
-  const intent = decodeIntent(input);
-  handleIntent(intent, input);
+  if(!STATE.initialized){
+    STATE.userName = input;
+    STATE.initialized = true;
+    bot(`Prazer, ${STATE.userName}. Pode me perguntar qualquer coisa sobre o espaço 😊`);
+    return;
+  }
+
+  const bloco = decodeIntent(input);
+
+  if(bloco){
+    bloco.resposta();
+  }else{
+    bot("Não entendi completamente 🤔 Você pode perguntar sobre valores, horários, estrutura ou localização.");
+  }
 }
 
 userInput.addEventListener("keypress",e=>{
   if(e.key==="Enter") sendMessage();
 });
-
-// ================= REDIRECT =================
-function redirectWhatsApp(msg){
-  const url=`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-  window.open(url,"_blank");
-}
 </script>
 
 </body>

@@ -23,14 +23,16 @@ background:var(--bg-dark);
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+min-height:100dvh;
+height:auto;
 color:white;
 }
 
 #app{
 width:100%;
 max-width:420px;
-height:90vh;
+height:100%;
+max-height:100dvh;
 background:#25252b;
 border-radius:28px;
 display:flex;
@@ -50,6 +52,7 @@ background:#1a1a1f;
 
 .logo-24{font-size:120px;font-weight:800;}
 .logo-house{letter-spacing:8px;color:#aaa;margin-top:-20px;}
+
 .start-btn{
 margin-top:30px;
 padding:14px 40px;
@@ -83,6 +86,8 @@ overflow-y:auto;
 display:flex;
 flex-direction:column;
 gap:10px;
+-webkit-overflow-scrolling:touch;
+overscroll-behavior:contain;
 }
 
 .msg{
@@ -101,6 +106,8 @@ display:flex;
 padding:10px;
 background:#0e0e11;
 gap:6px;
+position:sticky;
+bottom:0;
 }
 
 #userInput{
@@ -278,15 +285,16 @@ function handleUser(){
 
   user(raw);
   input.value="";
-  process(normalize(raw));
-}
 
-function process(text){
-  if(text === "#debug"){
+  if(raw.trim() === "#debug"){
     showDebug();
     return;
   }
 
+  process(normalize(raw));
+}
+
+function process(text){
   const decoded=decode(text);
 
   if(!decoded){
@@ -317,13 +325,28 @@ function askClarification(){
 
 function showDebug(){
   let msg="🧠 MODO DEBUG ATIVO\n\n📈 Respostas reforçadas:\n";
-  for(const k in LearningStore.data.responses){
-    msg+=`- ${k}: ${LearningStore.data.responses[k]}\n`;
+
+  const r = LearningStore.data.responses;
+  const u = LearningStore.data.unanswered;
+
+  if(Object.keys(r).length === 0){
+    msg += "- (nenhuma)\n";
+  } else {
+    for(const k in r){
+      msg += `- ${k}: ${r[k]}\n`;
+    }
   }
-  msg+="\n❓ Perguntas não respondidas:\n";
-  LearningStore.data.unanswered.forEach(u=>{
-    msg+=`- ${u.text}\n`;
-  });
+
+  msg += "\n❓ Perguntas não respondidas:\n";
+
+  if(u.length === 0){
+    msg += "- (nenhuma)\n";
+  } else {
+    u.forEach(item=>{
+      msg += `- ${item.text}\n`;
+    });
+  }
+
   bot(msg);
 }
 

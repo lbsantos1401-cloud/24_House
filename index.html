@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>24 House | Plataforma Inteligente</title>
+<title>24 House | Agente Cognitivo</title>
 
 <style>
 :root{
@@ -39,8 +39,6 @@ overflow:hidden;
 box-shadow:0 20px 60px rgba(0,0,0,0.7);
 }
 
-/* WELCOME */
-
 #welcomeScreen{
 flex:1;
 display:flex;
@@ -53,10 +51,8 @@ background:#1a1a1f;
 .logo-24{
 font-size:120px;
 font-weight:800;
-color:white;
 letter-spacing:-6px;
 text-shadow:0 0 25px rgba(188,19,254,0.5);
-margin:0;
 }
 
 .logo-house{
@@ -77,8 +73,6 @@ color:white;
 font-weight:bold;
 cursor:pointer;
 }
-
-/* CHAT */
 
 #chatScreen{
 display:none;
@@ -125,77 +119,8 @@ align-self:flex-end;
 border-bottom-right-radius:4px;
 }
 
-/* OPTIONS */
-
-.options{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-margin-top:5px;
-}
-
-.options button{
-flex:1 1 45%;
-padding:10px;
-border-radius:8px;
-border:none;
-background:#333;
-color:white;
-cursor:pointer;
-}
-
-/* SCROLL WINDOW (MÊS / DIA) */
-
-.select-window{
-background:#18181c;
-border-radius:12px;
-padding:10px;
-max-height:160px;
-overflow-y:auto;
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
-.select-item{
-padding:8px;
-border-radius:6px;
-background:#2a2a31;
-cursor:pointer;
-font-size:13px;
-}
-
-.select-item:hover{
-background:var(--primary);
-}
-
-/* VERIFY BUTTON */
-
-.verify-btn{
-margin-top:10px;
-padding:10px;
-border:none;
-border-radius:8px;
-background:var(--primary);
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-.link-btn{
-display:block;
-background:var(--primary);
-color:white;
-padding:10px;
-border-radius:10px;
-text-align:center;
-text-decoration:none;
-margin-top:6px;
-font-size:14px;
-}
-
 #inputArea{
-display:none;
+display:flex;
 padding:10px;
 background:#0e0e11;
 gap:6px;
@@ -226,207 +151,139 @@ cursor:pointer;
 <div id="app">
 
 <div id="welcomeScreen">
-<h1 class="logo-24">24</h1>
-<h2 class="logo-house">HOUSE</h2>
-<button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
+  <h1 class="logo-24">24</h1>
+  <h2 class="logo-house">HOUSE</h2>
+  <button class="start-btn" onclick="enterChat()">Iniciar Atendimento</button>
 </div>
 
 <div id="chatScreen">
-<div class="header">24 House Intelligence</div>
-<div id="messages"></div>
-<div id="inputArea">
-<input id="userInput" placeholder="Digite seu nome...">
-<button class="send-btn" onclick="sendName()">Enviar</button>
-</div>
+  <div class="header">24 House Intelligence</div>
+  <div id="messages"></div>
+  <div id="inputArea">
+    <input id="userInput" placeholder="Digite sua mensagem...">
+    <button class="send-btn" onclick="sendMessage()">Enviar</button>
+  </div>
 </div>
 
 </div>
 
 <script>
-
+// ================= CONFIG =================
 const CONFIG = {
-whatsappNumber:"555186267502",
-driveLink:"https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6",
-agenda:{
-2026:{
-"Janeiro":31,"Fevereiro":28,"Março":31,"Abril":30,
-"Maio":31,"Junho":30,"Julho":31,"Agosto":31,
-"Setembro":30,"Outubro":31,"Novembro":30,"Dezembro":31
-}
-}
+  whatsappNumber:"555186267502",
+  driveLink:"https://drive.google.com/drive/folders/1aiNziwXzKje1QoXpFKYrz-UFz1T2zz_6"
 };
 
-let userName="";
-let selectedMonth="";
-let selectedDay="";
+// ================= ESTADO COGNITIVO =================
+const STATE = {
+  userName: null,
+  initialized: false
+};
 
+// ================= UI CORE =================
 function enterChat(){
-welcomeScreen.style.display="none";
-chatScreen.style.display="flex";
+  welcomeScreen.style.display="none";
+  chatScreen.style.display="flex";
 
-setTimeout(()=>{
-bot("Olá! Seja bem-vindo à 24 House.");
-setTimeout(()=>{
-bot("Qual é o seu primeiro nome?");
-inputArea.style.display="flex";
-},600);
-},500);
+  setTimeout(()=>{
+    bot("Olá! Seja bem-vindo à 24 House.");
+    bot("Antes de tudo, qual é o seu nome?");
+  },500);
 }
 
 function bot(text){ addMessage("bot",text); }
 function user(text){ addMessage("user",text); }
 
 function addMessage(type,text){
-const div=document.createElement("div");
-div.className=`msg ${type}`;
-div.innerText=text;
-messages.appendChild(div);
-scroll();
+  const div=document.createElement("div");
+  div.className=`msg ${type}`;
+  div.innerText=text;
+  messages.appendChild(div);
+  messages.scrollTop=messages.scrollHeight;
 }
 
-function scroll(){
-messages.scrollTop=messages.scrollHeight;
+// ================= DECODER =================
+function decodeIntent(text){
+  const t = text.toLowerCase();
+
+  if(!STATE.initialized){
+    return "NAME";
+  }
+
+  if(t.includes("foto") || t.includes("imagem") || t.includes("galeria")){
+    return "FOTOS";
+  }
+
+  if(t.includes("preço") || t.includes("valor") || t.includes("pacote")){
+    return "PACOTES";
+  }
+
+  if(t.includes("agenda") || t.includes("data") || t.includes("marcar")){
+    return "AGENDA";
+  }
+
+  if(t.includes("humano") || t.includes("atendente")){
+    return "HUMANO";
+  }
+
+  return "UNKNOWN";
 }
 
-function sendName(){
-const input=userInput.value.trim();
-if(!input)return;
+// ================= DECISÃO =================
+function handleIntent(intent, text){
+  switch(intent){
 
-userName=input;
-user(userName);
-userInput.value="";
-inputArea.style.display="none";
+    case "NAME":
+      STATE.userName = text;
+      STATE.initialized = true;
+      bot(`Prazer, ${STATE.userName}. Pode me dizer como posso ajudar?`);
+      break;
 
-setTimeout(()=>{
-bot(`Prazer, ${userName}. Como posso ajudar?`);
-mainMenu();
-},600);
+    case "FOTOS":
+      bot("Aqui está nossa galeria:");
+      window.open(CONFIG.driveLink,"_blank");
+      break;
+
+    case "PACOTES":
+      bot("Temos pacotes a partir de R$799. Se quiser, posso detalhar 😊");
+      break;
+
+    case "AGENDA":
+      bot("Para verificar agenda, posso te encaminhar direto para um atendente.");
+      redirectWhatsApp(`Olá, me chamo ${STATE.userName} e gostaria de verificar disponibilidade.`);
+      break;
+
+    case "HUMANO":
+      redirectWhatsApp(`Olá, me chamo ${STATE.userName} e gostaria de falar com um atendente.`);
+      break;
+
+    default:
+      bot("Não entendi totalmente 🤔 Você pode perguntar sobre fotos, valores ou agenda.");
+  }
 }
 
-function mainMenu(){
-showOptions([
-"Fotos do salão",
-"Pacotes e valores",
-"Agenda disponível",
-"Falar com humano"
-]);
-}
+// ================= INPUT =================
+function sendMessage(){
+  const input = userInput.value.trim();
+  if(!input) return;
 
-function showOptions(list){
-const container=document.createElement("div");
-container.className="options";
+  user(input);
+  userInput.value="";
 
-list.forEach(item=>{
-const btn=document.createElement("button");
-btn.innerText=item;
-btn.onclick=()=>{
-user(item);
-container.remove();
-handleMenu(item);
-};
-container.appendChild(btn);
-});
-
-messages.appendChild(container);
-scroll();
-}
-
-function handleMenu(option){
-
-if(option==="Fotos do salão"){
-bot("Aqui está nossa galeria:");
-const link=document.createElement("a");
-link.href=CONFIG.driveLink;
-link.target="_blank";
-link.className="link-btn";
-link.innerText="Clique aqui para ver fotos";
-messages.appendChild(link);
-scroll();
-setTimeout(mainMenu,1500);
-}
-
-if(option==="Pacotes e valores"){
-bot("Pacote 1: R$799\nPacote 2: R$990");
-setTimeout(mainMenu,1500);
-}
-
-if(option==="Agenda disponível"){
-bot("Selecione o mês desejado:");
-showMonthWindow();
-}
-
-if(option==="Falar com humano"){
-redirectWhatsApp("Olá, gostaria de falar com um atendente.");
-}
-}
-
-/* ===== NOVO SISTEMA JANELA MÊS / DIA ===== */
-
-function showMonthWindow(){
-const container=document.createElement("div");
-container.className="select-window";
-
-Object.keys(CONFIG.agenda["2026"]).forEach(month=>{
-const item=document.createElement("div");
-item.className="select-item";
-item.innerText=month;
-item.onclick=()=>{
-selectedMonth=month;
-user(month);
-container.remove();
-bot(`Agora escolha o dia de ${month}:`);
-showDayWindow(month);
-};
-container.appendChild(item);
-});
-
-messages.appendChild(container);
-scroll();
-}
-
-function showDayWindow(month){
-const container=document.createElement("div");
-container.className="select-window";
-
-for(let i=1;i<=CONFIG.agenda["2026"][month];i++){
-const item=document.createElement("div");
-item.className="select-item";
-item.innerText=i;
-item.onclick=()=>{
-selectedDay=i;
-user(i.toString());
-container.remove();
-showVerifyButton();
-};
-container.appendChild(item);
-}
-
-messages.appendChild(container);
-scroll();
-}
-
-function showVerifyButton(){
-const btn=document.createElement("button");
-btn.className="verify-btn";
-btn.innerText="Verificar data";
-btn.onclick=()=>{
-redirectWhatsApp(
-`Olá, me chamo ${userName} e gostaria de verificar disponibilidade na data ${selectedDay} de ${selectedMonth} de 2026.`
-);
-};
-messages.appendChild(btn);
-scroll();
-}
-
-function redirectWhatsApp(msg){
-const url=`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-window.open(url,"_blank");
+  const intent = decodeIntent(input);
+  handleIntent(intent, input);
 }
 
 userInput.addEventListener("keypress",e=>{
-if(e.key==="Enter")sendName();
+  if(e.key==="Enter") sendMessage();
 });
 
+// ================= REDIRECT =================
+function redirectWhatsApp(msg){
+  const url=`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+  window.open(url,"_blank");
+}
 </script>
+
 </body>
 </html>
